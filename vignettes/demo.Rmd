@@ -1,0 +1,15 @@
+---
+title: "NCDBRecode"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r}
+library(NCDBRecode)
+NCDBRecode(df)
+```
