@@ -523,33 +523,8 @@ NCDBRecode <- function(df) {
 
   ################## CANCER IDENTIFICATION #################
 
-  ### SEQUENCE_NUMBER - Sequence Number
-  # Indicates the sequence of malignant and non-malignant neoplasms over the
-  # lifetime of the patient.
-  # Codes 00-59 and 99 indicate neoplasms of in situ or invasive malignant
-  # behavior (Behavior equals 2 or 3). Codes 60-88 indicate neoplasms of benign or
-  # borderline non-malignant behavior (Behavior equals 0 or 1).
-  # · Code 00 only if the patient has a single malignant primary. If the patient
-  # develops a subsequent malignant invasive or in situ primary tumor, change the
-  # code for the first tumor from 00 to 01, and number subsequent tumors sequentially.
-  # Code 99 is used in the rare situation for which the sequence of a malignant
-  # invasive or in situ tumor is unknown.
-  # · Code 60 only if the patient has a single non-malignant primary. If the patient
-  # develops a subsequent non-malignant primary, change the code for the first tumor
-  # from 60 to 61, and assign codes to subsequent non-malignant primaries
-  # sequentially.
-  # Code 88 is used in the rare situation for which the sequence of a benign or
-  # borderline tumor is unknown,
-  # · If two or more malignant invasive or in situ neoplasms are diagnosed at the
-  # same time, assign the lowest sequence number to the diagnosis with the worst
-  # prognosis. If no difference in prognosis is evident, the decision is arbitrary.
-  # · If two or more non-malignant neoplasms are diagnosed at the same time,
-  # assign the lowest sequence number to the diagnosis with the worst prognosis. If no
-  # difference in prognosis is evident, the decision is arbitrary.
-  # · Any tumor in the patient's past which is reportable or reportable-by-agreement
-  # must be taken into account when sequencing subsequently accessioned tumors.
-  # · Sequence numbers should be reassigned if the facility learns later of an
-  # unaccessioned tumor that affects the sequence.
+  #SEQUENCE_NUMBER
+  #Indicates the sequence of malignant and non-malignant neoplasms over the lifetime of the patient.
 
   df$SEQUENCE_NUMBER <-
     factor(
