@@ -2,7 +2,7 @@ Package: NCDBRecode
 Type: Package
 Title: Decode NCDB files using the participant user file (PUF) data dictionary
 Version: 0.1.0
-Author: Samuel Auger, MD
+Author: Samuel Auger
 Maintainer: Samuel Auger <sam.r.auger@gmail.com>
 Description: The National Cancer Database is a a joint project of the Commission on Cancer (CoC) of the American College of Surgeons and the American Cancer Society. The NCDB was established in 1989 as a hospital-based registry containing detailed information on patient demographics, diagnostic approaches, treatment modalities, and vital status at follow-up. The database represents approximately 72% of all cancer cases and 84.3% of all cases involving the nose, nasal cavity, and middle ear in the United States with contributions from over 1500 national Commission on Cancer-accredited programs.
     This package uses values contained in the PUF data dictionary file and recodes the variables as factors (when indicated) with appropriate labels.

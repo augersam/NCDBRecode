@@ -2,25 +2,30 @@
 #'
 #' This package serves to recode the standard NCDB excel or stata .sav file for ease of survival analysis
 #' @export
+
 NCDBRecode <- function(df) {
 
-  ################## PATIENT DEMOGRAPHICS  #################
-  ### PUF_CASE_ID - Unique case identification number assigned to the case in the PUF.
+  ################## PATIENT DEMOGRAPHICS#################
+  # PUF_CASE_ID - Unique case identification number assigned to the case in the PUF.
+  # NCDB assigned value that uniquely identifies each case included in the PUF. The value
+  # assigned to each case is selected at random, and the value assigned to each case will
+  # change with each issued PUF. The PUF Case IDs are not the same across cancer sites, and
+  # cases cannot be linked across cancer sites.
+  # Note that the length of this key was expanded from 10 to 37 in January 2014.
 
-  df$PUF_CASE_ID <- NA
+  df$PUF_CASE_ID
 
-  ### PUF_FACULTY_ID - The facility reporting the case to the NCDB. Codes are anonymized. The facility
+  # PUF_FACULTY_ID - The facility reporting the case to the NCDB. Codes are anonymized. The facility
   # random IDs are assigned regardless of cancer site, so you may identify the same
   # facilities across cancer sites.
 
   df$PUF_FACILITY_ID <- NA
 
-  ### FACILITY_TYPE_CD
+  # FACILITY_TYPE_CD
   # Each facility reporting cases to the NCDB is assigned a category classification by
   # the Commission on Cancer Accreditation program. This item provides a general
   # classification of the structural characteristics of each reporting facility.
-  # Analytic Note:
-  #   For additional information about CoC accreditation categories
+  # Analytic Note: For additional information about CoC accreditation categories
   # see https://www.facs.org/quality-programs/cancer/accredited/about/categories.
   # Please note that for hospitals who are categorized as Integrated Network Cancer
   # Programs, there is no information in the PUF data as to when these facilities
@@ -35,27 +40,27 @@ NCDBRecode <- function(df) {
   # See Data De-identification and Confidentiality for a description of the handling of
   # some categories. Please note that VA/DoD facilities are not included in the PUF
   # files, and therefore are not identifiable as a type of cancer program
+
   df$FACILITY_TYPE_CD <-
     factor(
       df$FACILITY_TYPE_CD,
-      levels = c(1, 2, 3, 4, 9),
+      levels = c(1, 2, 3, 4),
       labels = c(
         "Community Cancer Program",
         "Comprehensive Community Cancer Program",
         "Academic/Research Program (includes NCI-designated comprehensive cancer centers)",
-        "Integrated Network Cancer Program",
-        "Other or unknown types of cancer programs"
+        "Integrated Network Cancer Program"
       )
     )
 
   var_label(df$FACILITY_TYPE_CD) <- "Facility Type"
 
-  ### FACILITY_LOCATION_CD - Facility Location
+  #FACILITY_LOCATION_CD
   # The US Census Division of the reporting facility
   df$FACILITY_LOCATION_CD <-
     factor(
       df$FACILITY_LOCATION_CD,
-      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
       labels = c(
         "New England",
         "Middle Atlantic",
@@ -65,14 +70,58 @@ NCDBRecode <- function(df) {
         "West North Central",
         "West South Central",
         "Mountain",
-        "Pacific",
-        "Out of US (All other values)"
+        "Pacific"
       )
     )
 
   var_label(df$FACILITY_LOCATION_CD) <- "Facility Location"
 
-  ### SEX - Identifies the sex of tha patient
+  #PUF_MULTI_SOURCE
+  # Identifies whether there was more than one CoC facility that submitted a report for this case to NCDB.
+
+  df$PUF_MULT_SOURCE <-
+    factor(
+      df$PUF_MULT_SOURCE,
+      levels = c(0, 1),
+      labels = c(
+        'Only one CoC facility reported this case to NCDB',
+        'Records pertaining to this case submitted to NCDB by more than one CoC facility'
+      )
+    )
+
+  var_label(df$PUF_MULT_SOURCE) <- "Patient Treated in More than One CoC Facility"
+
+  #REFERENCE_DATE_FLAG
+  # Identifies whether a report for a case has a diagnosis date before or after the facility's reference date.
+  # NOTE:
+  # Every facility has a reference date, from which they are accountable for the completeness of the data for cases
+  # diagnosed in that year through the present. Since a facility may request to move their reference date forward,
+  # there are some instances where a case’s diagnosis year falls before the facility’s reference date. This item is
+  # coded 0 in cases where this occurs. A 1 signifies cases where the diagnosis year is on or after the reference
+  # date year. Reports for cases whose diagnosis date is prior to the reference date cannot be changed or updated by
+  # the facility. For this reason, PUF researchers may choose to omit cases where the diagnosis date precedes the
+  # reference date, depending on the nature of the study.
+
+  df$REFERENCE_DATE_FLAG <-
+    factor(
+      df$REFERENCE_DATE_FLAG,
+      levels = c(0, 1),
+      labels = c(
+        'Diagnosis date before reference date',
+        'Diagnosis date on or after reference date'
+      )
+    )
+
+  var_label(df$REFERENCE_DATE_FLAG) <- "Reference Date Flag"
+
+  #AGE
+  # Records the age of the patient at his or her last birthday before diagnosis.
+
+  df$AGE
+
+  #SEX
+  # Identifies the sex of the patient
+
   df$SEX <-
     factor(df$SEX,
            levels = c(1, 2),
@@ -80,22 +129,55 @@ NCDBRecode <- function(df) {
 
   var_label(df$SEX) <- "Sex"
 
-  ### RACE - Identifies the primary race of the person
+  #RACE
+  # Identifies the primary race of the person
+  # Race is analyzed with Spanish/Hispanic Origin (NAACCR Item #190).
+  # Both items must be recorded. All tumors for the same patient should have the same race code.
+
   df$RACE <-
     factor(
       df$RACE,
-      levels = c(1, 2, 3, 4),
-      labels = c("White", "Black", "Asian", "Other")
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 25, 26, 27, 28, 30, 31, 32, 96, 97, 98, 99),
+      labels = c(
+        "White",
+        "Black",
+        "American Indian, Aleutian, or Eskimo",
+        "Chinese",
+        "Japanese",
+        "Filipino",
+        "Hawaiian",
+        "Korean",
+        "Vietnamese",
+        "Laotian",
+        "Hmong",
+        "Kampuchean (including Khmer and Cambodian)",
+        "Thai",
+        "Asian Indian or Pakistani, NOS (formerly code 09)",
+        "Asian Indian",
+        "Pakistani",
+        "Micronesian, NOS",
+        "Chamorran",
+        "Guamanian, NOS",
+        "Polynesian, NOS",
+        "Tahitian",
+        "Samoan",
+        "Tongan",
+        "Melanesian, NOS",
+        "Fiji Islander",
+        "New Guinean",
+        "Other Asian, including Asian, NOS and Oriental, NOS",
+        "Pacific Islander, NOS",
+        "Other",
+        "Unknown"
+      )
     )
   var_label(df$RACE) <- "Race"
 
-  ### SPANISH_HISPANIC_ORIGIN
-  # Identifies persons of Spanish or Hispanic origin.
-  # Persons of Spanish or Hispanic origin may be of any race, but these
-  # categories are generally not used for Native Americans, Filipinos, or others who
-  # may have Spanish names.
-  # Code 0 (Non-Spanish; non-Hispanic) for Portuguese and Brazilian persons.
-  # If the patient has multiple tumors, all records should have the same code.
+  #SPANISH_HISPANIC_ORIGIN
+  # Persons of Spanish or Hispanic origin may be of any race, but these categories are generally not
+  # used for Native Americans, Filipinos, or others who may have Spanish names.
+  # Code 0 (Non-Spanish; non-Hispanic) for Portuguese and Brazilian persons. If the patient has multiple tumors,
+  # all records should have the same code.
 
   df$SPANISH_HISPANIC_ORIGIN <-
     factor(
@@ -115,7 +197,9 @@ NCDBRecode <- function(df) {
       )
     )
 
-  ### INSURANCE_STATUS - Primary Payor
+  var_label(df$SPANISH_HISPANIC_ORIGIN) <- "Spanish Origin"
+
+  #INSURANCE_STATUS
   # Identifies the patient's primary insurance carrier at the time of initial diagnosis
   # and/or treatment.
   df$INSURANCE_STATUS <-
@@ -132,30 +216,133 @@ NCDBRecode <- function(df) {
       )
     )
 
-  df$INSURANCE_STATUS <- relevel(df$INSURANCE_STATUS, ref = "Private Insurance/Managed Care")
+  var_label(df$INSURANCE_STATUS) <- "Primary Payer"
 
-  var_label(df$INSURANCE_STATUS) <- "Insurance Status"
+  #MEDICAID_EXPN_CODE
+  # Reference: https://www.medicaid.gov/medicaid/program- information/downloads/december-2015-enrollment-report.pdf
 
-  ### NO_HSD_QUAR_00 - Education 2000
+  df$MEDICAID_EXPN_CODE <-
+    factor(
+      df$MEDICAID_EXPN_CODE,
+      levels = c(0, 1, 2, 3, 9),
+      labels = c("Non-Expansion States",
+                 "January 2014 Expansion States",
+                 "Early Expansion States (2010 - 2013)",
+                 "Late Expansion States (after Jan 2014)",
+                 "Suppressed for Ages 0-39")
+    )
+
+  var_label(df$MEDICAID_EXPN_CODE) <- "Medicaid Expansion Status State Group"
+
+
+  #MED_INC_QUAR_00
+  # Median household income for each patient's area of residence is estimated by
+  # matching the zip code of the patient recorded at the time of diagnosis against files
+  # derived from year 2000 US Census data. Household income is categorized as
+  # quartiles based on equally proportioned income ranges among all US zip codes.
+  df$MED_INC_QUAR_00 <-
+    factor(
+      df$MED_INC_QUAR_00,
+      levels = c(1, 2, 3, 4),
+      labels = c(
+        "Less than $30,000",
+        "$30,000-$34,000",
+        "$35,000-$45,999",
+        "$46,000 or more"
+      )
+    )
+
+  var_label(df$MED_INC_QUAR_00) <- "Income 2000"
+
+  ### NO_HSD_QUAR_00
   # This measure of educational attainment for each patient's area of residence is
   # estimated by matching the zip code of the patient recorded at the time of diagnosis
   # against files derived from year 2000 US Census data. This item provides a
   # measure of the number of adults in the patient's zip code who did not graduate
   # from high school, and is categorized as equally proportioned quartiles among all
   # US zip codes
+
   df$NO_HSD_QUAR_00 <-
     factor(
       df$NO_HSD_QUAR_00,
       levels = c(1, 2, 3, 4),
       labels = c("29% or more",
-                 "20%-28.9%",
-                 "14%-19.9%",
+                 "20% - 28.9%",
+                 "14% - 19.9%",
                  "Less than 14%")
     )
 
-  var_label(df$NO_HSD_QUAR_00) <- "High School Attrition by Zip Code"
+  var_label(df$NO_HSD_QUAR_00) <- "Education 2000"
 
-  ### NO_HSD_QUAR_12 - Education 2008-2012
+
+  #UR_CD_2003
+  # Area-based measure of rurality and urban influence, using the typology published
+  # by the USDA Economic Research Service.
+  # Analytic Note:
+  #   This item was estimated by matching the state and county FIPS code of the patient
+  # recorded at the time of diagnosis against 2003 files published by the United States
+  # Department of Agriculture Economic Research Service
+  # (http://www.ers.usda.gov/data-products/rural-urban-continuum-codes).
+  # Rural-Urban continuum codes form a classification scheme that distinguishes
+  # metropolitan (metro) counties by the population size of their metro area, and
+  # nonmetropolitan (nonmetro) counties by degree of urbanization and adjacency to a
+  # metro area or areas. The metro and nonmetro categories have been subdivided
+  # into three metro and six nonmetro groupings, resulting in a nine-part county
+  # codification. The codes allow researchers working with data to break such data into
+  # finer residential groups beyond a simple metro-nonmetro dichotomy, particularly for
+  # the analysis of trends in nonmetro areas that may be related to degree of rurality
+  # and metro proximity.
+
+  df$UR_CD_03 <-
+    factor(
+      df$UR_CD_03,
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+      labels = c(
+        # Metro counties
+        "Counties in metro areas of 1 million population or more",
+        "Counties in metro areas of 250,000 to 1 million population",
+        "Counties in metro areas of fewer than 250,000 population",
+        # Urban Counties
+        "Urban population of 20,000 or more, adjacent to a metro area.",
+        "Urban population of 20,000 or more, not adjacent to a metro area.",
+        "Urban population of 2,500 to 19,999, adjacent to a metro area.",
+        "Urban population of 2,500 to 19,999, not adjacent to a metro area.",
+        # Rural Counties
+        "Completely rural or less than 2,500 urban population, adjacent to a metro area",
+        "Completely rural or less than 2,500 urban population, not adjacent to a metro area"
+
+      )
+    )
+
+  var_label(df$UR_CD_03) <- "Urban/Rural 2003"
+
+  #MED_INC_QUAR_12
+  # Median household income for each patient's area of residence is estimated by
+  # matching the zip code of the patient recorded at the time of diagnosis against files
+  # derived from the 2012 American Community Survey data, spanning years 2008
+  # 2012 and adjusted for 2012 inflation. Household income is categorized as quartiles
+  # based on equally proportioned income ranges among all US zip codes. Due to
+  # differences in collection methodology, comparisons with Census 2000 income data
+  # should be done with caution. See
+  # https://www.census.gov/acs/www/guidance_for_data_users/comparing_2012/ for
+  # more information.
+
+  df$MED_INC_QUAR_12 <-
+    factor(
+      df$MED_INC_QUAR_12,
+      levels = c(1, 2, 3, 4),
+      labels = c(
+        "Less than $38,000",
+        "$38,000-$47,999",
+        "$48,000-$62,999",
+        "$63,000 or more"
+      )
+    )
+
+  var_label(df$MED_INC_QUAR_12) <- "Income 2008-2012"
+
+
+  #NO_HSD_QUAR_12
   # This measure of educational attainment for each patient's area of residence is
   # estimated by matching the zip code of the patient recorded at the time of diagnosis
   # against files derived from the 2012 American Community Survey data, spanning
@@ -174,97 +361,31 @@ NCDBRecode <- function(df) {
                  "7%-12.9%",
                  "Less than 7%")
     )
-  var_label(df$NO_HSD_QUAR_12) <- "High School Attrition by Zip Code"
+  var_label(df$NO_HSD_QUAR_12) <- "Education 2008-2012"
 
+  #MED_INC_QUAR_2016
+  # Median household income for each patient's area of residence is estimated by matching
+  # the zip code of the patient recorded at the time of diagnosis against files derived from
+  # the 2016 American Community Survey data, spanning years 2012-2016 and adjusted for 2016 inflation.
+  # Household income is categorized as quartiles based on equally proportioned income ranges
+  # among all US zip codes.
 
-  ### MED_INC_QUAR_00 - Income 2000
-  # Median household income for each patient's area of residence is estimated by
-  # matching the zip code of the patient recorded at the time of diagnosis against files
-  # derived from year 2000 US Census data. Household income is categorized as
-  # quartiles based on equally proportioned income ranges among all US zip codes.
-  df$MED_INC_QUAR_00 <-
+  df$MED_INC_QUAR_16 <-
     factor(
-      df$MED_INC_QUAR_00,
+      df$MED_INC_QUAR_16,
       levels = c(1, 2, 3, 4),
       labels = c(
-        "Less than $30,000",
-        "$30,000-$34,000",
-        "$35,000-$45,999",
-        "$46,000 or more"
-      )
+        "Less than $40,227",
+        "$40,227 - $50,353",
+        "$50,354 - $63,332",
+        "63,333+")
     )
-
-  var_label(df$MED_INC_QUAR_00) <- "Median Income by Zip Code"
-
-
-  ### MED_INC_QUAR_12 - Income 2008-2012
-  # Median household income for each patient's area of residence is estimated by
-  # matching the zip code of the patient recorded at the time of diagnosis against files
-  # derived from the 2012 American Community Survey data, spanning years 2008
-  # 2012 and adjusted for 2012 inflation. Household income is categorized as quartiles
-  # based on equally proportioned income ranges among all US zip codes. Due to
-  # differences in collection methodology, comparisons with Census 2000 income data
-  # should be done with caution. See
-  # https://www.census.gov/acs/www/guidance_for_data_users/comparing_2012/ for
-  # more information.
-  df$MED_INC_QUAR_12 <-
-    factor(
-      df$MED_INC_QUAR_12,
-      levels = c(1, 2, 3, 4),
-      labels = c(
-        "Less than $38,000",
-        "$38,000-$47,999",
-        "$48,000-$62,999",
-        "$63,000 or more"
-      )
-    )
-
-  var_label(df$MED_INC_QUAR_12) <- "Median Income by Zip Code"
+  var_label(df$MED_INC_QUAR_16) <- "Income 2012-2016"
 
 
-  ### UR_CD_2003 Urban/Rural 2003
+  #UR_CD_03
   # Area-based measure of rurality and urban influence, using the typology published
   # by the USDA Economic Research Service.
-  # Analytic Note:
-  #   This item was estimated by matching the state and county FIPS code of the patient
-  # recorded at the time of diagnosis against 2003 files published by the United States
-  # Department of Agriculture Economic Research Service
-  # (http://www.ers.usda.gov/data-products/rural-urban-continuum-codes).
-  # Rural-Urban continuum codes form a classification scheme that distinguishes
-  # metropolitan (metro) counties by the population size of their metro area, and
-  # nonmetropolitan (nonmetro) counties by degree of urbanization and adjacency to a
-  # metro area or areas. The metro and nonmetro categories have been subdivided
-  # into three metro and six nonmetro groupings, resulting in a nine-part county
-  # codification. The codes allow researchers working with data to break such data into
-  # finer residential groups beyond a simple metro-nonmetro dichotomy, particularly for
-  # the analysis of trends in nonmetro areas that may be related to degree of rurality
-  # and metro proximity.
-  df$UR_CD_03 <-
-    factor(
-      df$UR_CD_03,
-      levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-      labels = c(
-        "Counties in metro areas of 1 million population or more",
-        "Counties in metro areas of 250,000 to 1 million population",
-        "Counties in metro areas of fewer than 250,000 population",
-        "Urban population of 20,000 or more, adjacent to a metro area.",
-        "Urban population of 20,000 or more, not adjacent to a metro area.",
-        "Urban population of 2,500 to 19,999, adjacent to a metro area.",
-        "Urban population of 2,500 to 19,999, not adjacent to a metro area.",
-        "Completely rural or less than 2,500 urban population, adjacent to a metro area",
-        "Completely rural or less than 2,500 urban population, not adjacent to a metro area"
-
-      )
-    )
-
-  var_label(df$UR_CD_03) <- "Rurality"
-
-
-  ### UR_CD_03 - Urban/Rural 2013
-  # Area-based measure of rurality and urban influence, using the typology published
-  # by the USDA Economic Research Service.
-  # Registry Coding Instructions:
-  #   None.
   # Analytic Note:
   #   This item was estimated by matching the state and county FIPS code of the patient
   # recorded at the time of diagnosis against 2013 files published by the United States
@@ -289,22 +410,26 @@ NCDBRecode <- function(df) {
       df$UR_CD_13,
       levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
       labels = c(
+        # Metro counties
         "Metro areas >= 1 million",
         "Metro areas of 250,000 to 1 million",
         "Metro areas of fewer than 250,000",
-        "Urban areas of 20,000 or more, adjacent to a metro area.",
-        "Urban population of 20,000 or more, not adjacent to a metro area.",
-        "Urban population of 2,500 to 19,999, adjacent to a metro area.",
-        "Urban population of 2,500 to 19,999, not adjacent to a metro area.",
+        # Urban Counties
+        "Urban areas of 20,000 or more, adjacent to a metro area",
+        "Urban population of 20,000 or more, not adjacent to a metro area",
+        "Urban population of 2,500 to 19,999, adjacent to a metro area",
+        "Urban population of 2,500 to 19,999, not adjacent to a metro area",
+        # Rural Counties
         "Completely rural or less than 2,500 urban population, adjacent to a metro area",
         "Completely rural or less than 2,500 urban population, not adjacent to a metro area"
 
       )
     )
 
-  var_label(df$UR_CD_03) <- "Rurality"
+  var_label(df$UR_CD_03) <- "Urban/Rural 2013"
 
-
+  #URBAN_RURAL
+  # Calculated column to group the UR_CD_13 values by Metro/Urban/Rural
   df$URBAN_RURAL <- NA
   df$URBAN_RURAL[df$UR_CD_13 %in% c(
     "Metro areas >= 1 million",
@@ -333,57 +458,68 @@ NCDBRecode <- function(df) {
 
   var_label(df$URBAN_RURAL) <- "Rurality"
 
+  #NO_HSD_QUAR_2016
+  # This measure of educational attainment for each patient's area of residence is estimated
+  # by matching the zip code of the patient recorded at the time of diagnosis against files derived
+  # from the 2016 American Community Survey data, spanning years 2012-2016. This item provides a
+  # measure of the number of adults age 25 or older in the patient's zip code who did not graduate
+  # from high school, and is categorized as equally proportioned quartiles among all US zip codes.
 
-  ### CDCC_TOTAL - Charlson/Deyo Score
-  # Comorbid conditions as described by Charlson/Deyo (1992) are mapped from as
-  # many as ten reported ICD-9-CM secondary diagnosis codes reported for cases
-  # diagnosed January 1, 2003 and later. The Charlson/Deyo value is a weighted score
-  # derived from the sum of the scores for each of the comorbid conditions listed in the
-  # Charlson Comorbidity Score Mapping Table. The range for this value is between 0
-  # and 25.
-  # Analytic Note:
-  # Because of the small proportion of cases with a Charlson Comorbidity
-  # score exceeding 2, the data have been truncated to 0, 1, 2 (greater than 1). A
-  # score of 0 indicates "no comorbid conditions recorded", or none of the values
-  # shown below. Note that the patient's cancer is not directly reflected in the recorded
-  # score.
-  df$CDCC_SHORT <- NA
-
-  # Consolidate Charlson/Deyo score
-  deyoCalculation <- function(x) {
-    tryCatch({
-      if (x == 0) {
-        y = 0
-        return(y)
-      }
-      if (x == 1 || x == 2) {
-        y = 1
-        return(y)
-      }
-    }, error = function(error_message) {
-      return(NULL)
-    })
-  }
-
-  for (i in 1:length(df$CDCC_TOTAL)) {
-    tryCatch({
-      df$CDCC_SHORT[i] <- deyoCalculation(df$CDCC_TOTAL[i])
-    }, error = function(error_message) {
-      return(NULL)
-    })
-  }
-
-  df$CDCC_SHORT <-
+  df$NO_HSD_QUAR_16 <-
     factor(
-      df$CDCC_SHORT,
-      levels = c(0, 1),
+      df$NO_HSD_QUAR_16,
+      levels = c(1, 2, 3, 4),
+      labels = c("17.6% or more",
+                 "10.9% - 17.5%",
+                 "6.3% - 10.8%",
+                 "Less than 6.3%")
+    )
+  var_label(df$NO_HSD_QUAR_16) <- "Education 2012-2016"
+
+  #CROWFLY
+  # The "great circle" distance in miles between the patient's residence and the hospital that reported the case.
+  # Analytic Note:  Residential latitude and longitude are based on the patient's zip code centroid or on
+  # the city if the zip code was not available. Hospital locations are based on the street address for the
+  # facility. The great circle distance is calculated between those two points. In some instances, the
+  # residential city is outside of the United States, so the upper bound of distance may be quite large.
+  # A distance of 0 can result when the patient lives in the same zip code where the facility is located.
+
+  df$CROWFLY
+
+  #CDCC_TOTAL_BEST
+  # Comorbid conditions as described by Charlson/Deyo (1992) [1] are mapped from as many as ten reported
+  # ICD-9-CM or ICD-10 secondary diagnosis codes. The Charlson/Deyo value is a weighted score derived from
+  # the sum of the scores for each of the comorbid conditions listed in the Charlson Comorbidity Score Mapping Table
+  # (source: http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?conceptID=109 ). The range for this value
+  # is between 0 and 25. Starting with the 2015 PUF released in the Fall of 2017, ICD-10 codes are incorporated
+  # into the score calculation for cases diagnosed in 2006-2015. Registries were able to submit ICD-10 codes
+  # starting in 2006. However, very few ICD-10 codes were submitted until 2015.
+  # The 2015 Charlson-Deyo Score is derived from the highest score that is calculated from using either
+  # the ICD-9 codes or the ICD-10 codes. The allowable values have also been extended to now include values
+  # up to 3 or more.
+  # Analytic note: Because of the small proportion of cases with a Charlson Comorbidity score exceeding 3,
+  # the data have been truncated to 0, 1, 2, 3 (greater than or equal to 3). A score of 0 indicates
+  # "no comorbid conditions recorded", or none of the values shown below. Patients with a score of 0
+  # could still have comorbidities if they are conditions that are not included in the mapping table below.
+  # Note that the patient's cancer is not directly reflected in the recorded score. Two examples illustrating
+  # how the Charlson Score is summarized for the PUF data: If a patient had a myocardial infarction, diabetes,
+  # and renal disease, the cumulative score would be 4, and the value shown in the PUF would be 3. If a patient
+  # had severe liver disease, the value in the PUF would also be 3, since the Charlson Score of severe liver
+  # disease is 3.
+
+  df$CDCC_TOTAL_BEST <-
+    factor(
+      df$CDCC_TOTAL_BEST,
+      levels = c(0, 1, 2, 3),
       labels = c(
-        "Charlson Score of 0",
-        "Total Charlson score of 1 or more"
+        "Total Charlson Score of 0",
+        "Total Charlson score of 1",
+        "Total Charlson score of 2",
+        "Total Charlson score of 3 or more"
       )
     )
 
-  var_label(df$CDCC_SHORT) <- "Charlson/Deyo score, modified"
+  var_label(df$CDCC_TOTAL_BEST) <- "Charlson/Deyo Score"
 
   ################## CANCER IDENTIFICATION #################
 
