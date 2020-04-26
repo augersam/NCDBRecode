@@ -486,6 +486,9 @@ NCDBRecode <- function(df) {
 
   df$CROWFLY
 
+  var_label(df$CROWFLY) <- "Great Circle Distance"
+
+
   #CDCC_TOTAL_BEST
   # Comorbid conditions as described by Charlson/Deyo (1992) [1] are mapped from as many as ten reported
   # ICD-9-CM or ICD-10 secondary diagnosis codes. The Charlson/Deyo value is a weighted score derived from
@@ -523,7 +526,7 @@ NCDBRecode <- function(df) {
 
   ################## CANCER IDENTIFICATION #################
 
-  #SEQUENCE_NUMBER
+  #SEQUENCE_NUMBER - NOT DONE - Unsure how to manage mix of continuous and categorical
   #Indicates the sequence of malignant and non-malignant neoplasms over the lifetime of the patient.
 
   df$SEQUENCE_NUMBER <-
@@ -539,7 +542,40 @@ NCDBRecode <- function(df) {
       )
     )
 
-  #### PRIMARY_SITE - Primary Site
+  var_label(df$SEQUENCE_NUMBER) <- "Sequence Number"
+
+
+  #CLASS_OF_CASE
+  # Classifies cases recorded in the database.
+
+  df$CLASS_OF_CASE <-
+    factor(
+      df$CLASS_OF_CASE,
+      levels = c(00, 10, 11, 12, 13, 14, 20, 21, 22),
+      labels = c(
+        "Diagnosis at the reporting facility and all treatment or a decision not to treat was done elsewhere.",
+        "Initial diagnosis at the reporting facility, and part or all of first course treatment or a decision not to treat was at the reporting facility, NOS.",
+        "Initial diagnosis in a staff physician's office and part of first course treatment was done at the reporting facility.",
+        "Initial diagnosis in a staff physician's office and all of first course treatment or a decision not to treate was done at the reporting facility.",
+        "Initial diagnosis at the reporting facility and part of first course treatment was done at the reporting facility; part of first course treatment was done elsewhere.",
+        "Initial diagnosis at the reporting facility and all of first course treatment or a decision not to treat was done at the reporting facility.",
+        "Initial diagnosis elsewhere and all or part of first course treatment or a decision not to treat was done at the reporting facility, NOS.",
+        "Initial diagnosis elsewhere and part of first course treatment was done at the reporting facility; part of first course treatment was done elsewhere.",
+        "Initial diagnosis elsewhere and all of first course treatment or a decision not to treat was done at the reporting facility."
+      )
+    )
+
+  var_label(df$CLASS_OF_CASE) <- "Class of Case"
+
+  #YEAR_OF_DIAGNOSIS
+  # Records the year of initial diagnosis by a physician for the tumor being reported.
+
+  df$YEAR_OF_DIAGNOSIS
+
+  var_label(df$YEAR_OF_DIAGNOSIS) <- "Year of Diagnosis"
+
+
+  #PRIMARY_SITE - NOT DONE
   # Identifies the primary site, that is, the anatomic site of origin for the cancer.
   # Record the ICD-O-3 (International Classification of Diseases for Oncology, Third
   # Edition) topography code for the site of origin.
@@ -562,10 +598,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$PRIMARY_SITE) <- "Primary Site"
 
-
-  droplevels(df$PRIMARY_SITE)
-
-  ### LATERALITY - Laterality
+  #LATERALITY
   # Identifies the side of a paired organ or the side of the body on which the reportable
   # tumor originated. This applies to the primary site only
   df$LATERALITY <-
@@ -585,8 +618,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$LATERALITY) <- "Laterality"
 
-
-  ### HISTOLOGY - Histology
+  #HISTOLOGY
   # Records the tumor histology of all cases reported to the NCDB in International Classification of Disease
   # for Oncology, Third Edition (ICD-O-3) terms.
   # Analytic Note:
@@ -603,8 +635,9 @@ NCDBRecode <- function(df) {
   # A list of histologies and labels may be found on the online ICD-O-3 site:
   #   (http://codes.iarc.fr/home).
 
+  var_label(df$HISTOLOGY) <- "Histology"
 
-  #### BEHAVIOR - Behavior
+  #BEHAVIOR
   # Records the behavior of all cases reported to the NCDB. The fifth digit of the
   # morphology code is the behavior code
 
@@ -615,18 +648,21 @@ NCDBRecode <- function(df) {
       labels = c(
         "Benign Benign",
         "Borderline",
-        "In situ and/or carcinoma in situ",
-        "Invasive Invasive or microinvasive"
+        "In situ",
+        "Invasive or microinvasive"
       )
     )
 
   var_label(df$BEHAVIOR) <- "Behavior"
 
 
-  ### GRADE - Grade
+  #GRADE
   # Describes the tumor's resemblance to normal tissue. Well differentiated (Grade I) is
   # the most like normal tissue, and undifferentiated (Grade IV) is the least like normal
   # tissue. Code the grade or differentiation as stated in the final pathologic diagnosis.
+  # NCDBRecode note: Raw GRADE data is saved as GRADE_DESC, which is then broken out to GRADE_RECODE
+  # to simplify to low, high, other grade. GRADE_SHOT contains the same information as the raw GRADE
+  # but shorter
 
   df$GRADE_DESC <-
     factor(
@@ -645,11 +681,13 @@ NCDBRecode <- function(df) {
       )
     )
 
+  # Declare GRADE_RECODE and sort GRADE into three groups
   df$GRADE_RECODE <- NA
   df$GRADE_RECODE[df$GRADE %in% c(1, 2)] <- 0
   df$GRADE_RECODE[df$GRADE %in% c(3, 4)] <- 1
   df$GRADE_RECODE[df$GRADE %in% c(5, 6, 7, 8, 9)] <- 2
 
+  # Factor GRADE_RECODE
   df$GRADE_RECODE <-
     factor(
       df$GRADE_RECODE,
@@ -659,6 +697,7 @@ NCDBRecode <- function(df) {
                  "Other")
     )
 
+  # Declare GRADE_SHORT to maintain the detail of GRADE but more readable
   df$GRADE_SHORT <- df$GRADE
   df$GRADE_SHORT <-
     factor(
@@ -677,11 +716,11 @@ NCDBRecode <- function(df) {
     )
 
 
-  var_label(df$GRADE_SHORT) <- "Grade"
-  var_label(df$GRADE_RECODE) <- "Grade"
+  var_label(df$GRADE_SHORT) <- "Grade (short)"
+  var_label(df$GRADE_RECODE) <- "Grade (recode)"
 
 
-  #### DIAGNOSTIC CONFIRMATION #####
+  #DIAGNOSTIC CONFIRMATION
   # Records the most definitive method of diagnostic confirmation of the cancer being
   # reported at any time in the patient's history.
 
@@ -690,18 +729,19 @@ NCDBRecode <- function(df) {
       df$DIAGNOSTIC_CONFIRMATION,
       levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
       labels = c(
-        "Positive histology Histologic confirmation (tissue microscopically examined).",
-        "Positive cytology Cytologic confirmation (no tissue microscopically examined; fluid cells microscopically examined).",
-        "Postive histology PLUS positive immunophenotyping and/or positive genetic studies",
-        "Positive microscopic confirmation, method not specified",
-        "Positive laboratory test/marker study",
-        "Direct visualization without microscopic confirmation",
-        "Radiography and other imaging techniques without microscopic confirmation",
-        "Clinical diagnosis only (other than 5, 6, or 7)",
-        "A statement of malignancy was reported in the medical record"
+        "Positive histology", #Histologic confirmation (tissue microscopically examined)
+        "Positive cytology", #	Cytologic confirmation (no tissue microscopically examined; fluid cells microscopically examined
+        "Postive histology PLUS positive immunophenotyping and/or positive genetic studies", #Histology is positive for cancer, and there are also positive immunophenotyping and/or genetic test results. Use this code only for histology range 9590-9992 where the year of diagnosis is 2010 or later
+        "Positive microscopic confirmation, method not specified", #Microscopic confirmation is all that is known. It is unknown if the cells were from histology or cytology
+        "Positive laboratory test/marker study", #A clinical diagnosis of cancer is based on laboratory tests/marker studies which are clinically diagnostic for cancer. This includes alpha-fetoprotein for liver cancer and abnormal electrophoretic spike for multiple myeloma. Elevated PSA is nondiagnostic of cancer. If the physician uses the PSA as a basis for diagnosing prostate cancer with no other workup, record as code 5. (Adapted from SEER.)
+        "Direct visualization without microscopic confirmation", #The tumor was visualized during a surgical/endoscopic procedure only with no tissue resected for microscopic examination
+        "Radiography and other imaging techniques without microscopic confirmation", #The malignancy was reported by the physician from an imaging technique report only
+        "Clinical diagnosis only", # (Other than 5,6,7) The malignancy was reported by the physician in the medical record
+        "A statement of malignancy was reported in the medical record" #A statement of malignancy was reported in the medical record, but there is no statement of how the cancer was diagnosed (usually Class of Case 3)
       )
     )
 
+  # NOT DONE - Separate out categorical from continuous, batch continuous into groups, factor all.
   ### REGIONAL_NODES_POSITIVE
   # Records the exact number of regional lymph nodes examined by the pathologist
   # and found to contain metastases.
@@ -720,34 +760,34 @@ NCDBRecode <- function(df) {
   #       )
   #   )
 
-  df$NODES_POSITIVE <- NA
-  for (i in 1:length(df$REGIONAL_NODES_POSITIVE)) {
-    tryCatch({
-      df$NODES_POSITIVE[i] <-
-        nodeCount(df$REGIONAL_NODES_POSITIVE[i])
-    }, error = function(error_message) {
-      return(NULL)
-    })
-  }
-
-
-  df$NODES_POSITIVE <-
-    factor(
-      df$NODES_POSITIVE,
-      levels = c(0, 1, 2, 3, 4, 5, 6, 8, 9, 10),
-      labels = c(
-        "0",
-        "1",
-        "2-5",
-        "6-20",
-        "21-89",
-        "90 or more",
-        "Positive aspiration was performed",
-        "Positive nodes, # unspecified",
-        "No nodes examined",
-        "Unknown"
-      )
-    )
+  # df$NODES_POSITIVE <- NA
+  # for (i in 1:length(df$REGIONAL_NODES_POSITIVE)) {
+  #   tryCatch({
+  #     df$NODES_POSITIVE[i] <-
+  #       nodeCount(df$REGIONAL_NODES_POSITIVE[i])
+  #   }, error = function(error_message) {
+  #     return(NULL)
+  #   })
+  # }
+  #
+  #
+  # df$NODES_POSITIVE <-
+  #   factor(
+  #     df$NODES_POSITIVE,
+  #     levels = c(0, 1, 2, 3, 4, 5, 6, 8, 9, 10),
+  #     labels = c(
+  #       "0",
+  #       "1",
+  #       "2-5",
+  #       "6-20",
+  #       "21-89",
+  #       "90 or more",
+  #       "Positive aspiration was performed",
+  #       "Positive nodes, # unspecified",
+  #       "No nodes examined",
+  #       "Unknown"
+  #     )
+  #   )
 
 
   # 1 = 1
@@ -806,9 +846,19 @@ NCDBRecode <- function(df) {
   #       "Unknown"
   #     )
   #   )
+
   ################## STAGE OF DISEASE ######################
 
-  ### RX_SUMM_DXSTG_PROC - Diagnostic and Staging Procedure
+
+  #DX_STAGING_PROC_DAYS
+  # The number of days between the date of diagnosis (NAACCR Item #390) and the
+  # date the surgical diagnostic and/or staging procedure was performed (NAACCR
+  # Item #1280). This item is only available for diagnosis years 2003 and later.
+
+  var_label(df$DX_STAGING_PROC_DAYS) <- "Diagnostic and Staging procedure, days from DX"
+
+
+  #RX_SUMM_DXSTG_PROC
   # Records the type of surgical diagnostic and/or staging procedure performed.
 
   df$RX_SUMM_DXSTG_PROC <-
@@ -827,16 +877,46 @@ NCDBRecode <- function(df) {
       )
     )
 
-  ### DX_STAGING_PROC_DAYS - Diagnostic and Staging procedure, days from DX
-  # The number of days between the date of diagnosis (NAACCR Item #390) and the
-  # date the surgical diagnostic and/or staging procedure was performed (NAACCR
-  # Item #1280). This item is only available for diagnosis years 2003 and later.
+  var_label(df$RX_SUMM_DXSTG_PROC) <- "Diagnostic and Staging Procedure"
 
+  # RX_HOSP_DXSTG_PROC
+  # Records the type of surgical diagnostic and/or staging procedure performed at the reporting facility.
+  # This data item was added to the 2015 PUF (data released in Fall 2017),
+  # and does not appear in prior versions of the PUF data.
 
-  ### TNM_CLIN_T
+  df$RX_HOSP_DXSTG_PROC <-
+    factor(
+      as.numeric(df$RX_HOSP_DXSTG_PROC),
+      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 9),
+      labels = c(
+        "No surgical diagnostic or staging procedure was performed",
+        "A biopsy (incisional, needle, or aspiration) was done to a site other than the primary. No exploratory procedure was done",
+        "A biopsy (incisional, needle, or aspiration) was done to the primary site",
+        "A surgical exploration only. The patient was not biopsied or treated",
+        "A surgical procedure with a bypass was performed, but no biopsy was done",
+        "An exploratory procedure was performed, and a biopsy of either the primary site or another site was done",
+        "A bypass procedure was performed, and a biopsy of either the primary site or another site was done",
+        "A procedure was done, but the type of procedure is unknown",
+        "No information of whether a diagnostic or staging procedure was performed"
+      )
+    )
+
+  var_label(df$RX_HOSP_DXSTG_PROC) <- "Diagnostic and Staging Procedure at This Facility"
+
+  #TNM_CLIN_T
   # Identifies the clinically determined size and/or extension of the primary tumor (cT)
   # as defined by the American Joint Committee on Cancer (AJCC).
 
+  #Remove white space
+  # strip white space from problematic variables
+  df$TNM_CLIN_T <- trimws(df$TNM_CLIN_T, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_CLIN_N <- trimws(df$TNM_CLIN_N, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_CLIN_M <- trimws(df$TNM_CLIN_M, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_PATH_T <- trimws(df$TNM_PATH_T, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_PATH_N <- trimws(df$TNM_PATH_N, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_PATH_M <- trimws(df$TNM_PATH_M, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_CLIN_STAGE_GROUP <- trimws(df$TNM_CLIN_STAGE_GROUP, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  df$TNM_PATH_STAGE_GROUP <- trimws(df$TNM_PATH_STAGE_GROUP, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
 
   df$TNM_CLIN_T <-
     factor(
@@ -1652,28 +1732,6 @@ NCDBRecode <- function(df) {
   # "90-Surgery, NOS A surgical procedure to the primary site was done, but no information on the type of surgical procedure is provided. "
   # "98-Site-specific codes; special Special code. Refer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure."
   # "99-Unknown Patient record does not state whether a surgical procedure of the primary site was performed and no information is available. Death certificate only."
-
-  # RX_HOSP_DXSTG_PROC -
-  # Records the type of surgical diagnostic and/or staging procedure performed at the reporting facility.
-  # This data item was added to the 2015 PUF (data released in Fall 2017),
-  # and does not appear in prior versions of the PUF data.
-
-  df$RX_HOSP_DXSTG_PROC <-
-    factor(
-      as.numeric(df$RX_HOSP_DXSTG_PROC),
-      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 9),
-      labels = c(
-        "No surgical diagnostic or staging procedure was performed",
-        "A biopsy (incisional, needle, or aspiration) was done to a site other than the primary. No exploratory procedure was done",
-        "A biopsy (incisional, needle, or aspiration) was done to the primary site",
-        "A surgical exploration only. The patient was not biopsied or treated",
-        "A surgical procedure with a bypass was performed, but no biopsy was done",
-        "An exploratory procedure was performed, and a biopsy of either the primary site or another site was done",
-        "A bypass procedure was performed, and a biopsy of either the primary site or another site was done",
-        "A procedure was done, but the type of procedure is unknown",
-        "No information of whether a diagnostic or staging procedure was performed"
-      )
-    )
 
   ### RX_HOSP_SURG_APPR_2010 - Surgical Approach ONLY USED AFTER 2010
   # This item is used to monitor patterns and trends in the adoption and utilization of
