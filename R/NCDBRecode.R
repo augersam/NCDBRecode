@@ -907,8 +907,7 @@ NCDBRecode <- function(df) {
   # Identifies the clinically determined size and/or extension of the primary tumor (cT)
   # as defined by the American Joint Committee on Cancer (AJCC).
 
-  #Remove white space
-  # strip white space from problematic variables
+  #Remove white space from TNM variables
   df$TNM_CLIN_T <- trimws(df$TNM_CLIN_T, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
   df$TNM_CLIN_N <- trimws(df$TNM_CLIN_N, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
   df$TNM_CLIN_M <- trimws(df$TNM_CLIN_M, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
@@ -997,25 +996,25 @@ NCDBRecode <- function(df) {
       )
     )
 
-  df$T_RECODE <- NA
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cTX")] <- 0
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT0", "cTa")] <- 1
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT1", "cT1a", "cT1a1", "cT1a2", "ct1b", "ct1b1", "ct1b2", "cT1c", "cT1d")] <- 2
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT2", "cT2a", "cT2a1", "cT2a2", "cT2b", "cT2c", "cT2d")] <- 3
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT3", "cT3a", "cT3b", "cT3c", "cT3d")] <- 4
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT4")] <- 5
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT4a")] <-6
-  df$T_RECODE[df$TNM_CLIN_T %in% c("cT4b")] <- 7
-  df$T_RECODE[df$TNM_CLIN_T %in% c("c4c")] <- 8
-  df$T_RECODE[df$TNM_CLIN_T %in% c("c4d")] <- 9
-  df$T_RECODE[df$TNM_CLIN_T %in% c("c4e")] <- 10
-  df$T_RECODE[df$TNM_CLIN_T %in% c("pTis", "pTispu", "pTispd")] <- 11 ## Look into how this is used/what to call these
+  df$cT_RECODE <- NA
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cTX")] <- 0
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT0", "cTa")] <- 1
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT1", "cT1a", "cT1a1", "cT1a2", "ct1b", "ct1b1", "ct1b2", "cT1c", "cT1d")] <- 2
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT2", "cT2a", "cT2a1", "cT2a2", "cT2b", "cT2c", "cT2d")] <- 3
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT3", "cT3a", "cT3b", "cT3c", "cT3d")] <- 4
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT4")] <- 5
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT4a")] <-6
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("cT4b")] <- 7
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("c4c")] <- 8
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("c4d")] <- 9
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("c4e")] <- 10
+  df$cT_RECODE[df$TNM_CLIN_T %in% c("pTis", "pTispu", "pTispd")] <- 11 ## Look into how this is used/what to call these
 
 
 
-  df$T_RECODE <-
+  df$cT_RECODE <-
     factor(
-      df$T_RECODE,
+      df$cT_RECODE,
       levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
       labels = c("Tx",
                  "T0",
@@ -1031,7 +1030,7 @@ NCDBRecode <- function(df) {
                  "cIs or similar")
     )
 
-  var_label(df$T_RECODE) <- "Clinical T"
+  var_label(df$cT_RECODE) <- "Clinical T"
 
   #TNM_CLIN_N
   # Identifies the clinically determined absence or presence of regional lymph node
@@ -1093,21 +1092,21 @@ NCDBRecode <- function(df) {
     )
 
 
-  df$N_RECODE <- NA
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cNX")] <- 0
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN0", "cN0i-", "cN0i+", "cN0m-", "cN0m+", "cN0a", "cN0b")] <- 1
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN1mi", "cN1", "cN1a", "cN1b", "cN1c")] <- 2
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN2", "cN2a", "cN2b", "cN2c")] <- 3
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN2a")] <- 4
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN2b")] <- 5
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN2c")] <- 6
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN3", "cN3a", "cN3b", "cN3c")] <- 7
-  df$N_RECODE[df$TNM_CLIN_N %in% c("cN4")] <- 8
+  df$cN_RECODE <- NA
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cNX")] <- 0
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN0", "cN0i-", "cN0i+", "cN0m-", "cN0m+", "cN0a", "cN0b")] <- 1
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN1mi", "cN1", "cN1a", "cN1b", "cN1c")] <- 2
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN2", "cN2a", "cN2b", "cN2c")] <- 3
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN2a")] <- 4
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN2b")] <- 5
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN2c")] <- 6
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN3", "cN3a", "cN3b", "cN3c")] <- 7
+  df$cN_RECODE[df$TNM_CLIN_N %in% c("cN4")] <- 8
 
 
-  df$N_RECODE <-
+  df$cN_RECODE <-
     factor(
-      df$N_RECODE,
+      df$cN_RECODE,
       levels = c(0, 1, 2, 3, 4, 5, 6, 7),
       labels = c("NX",
                  "N0",
@@ -1119,7 +1118,7 @@ NCDBRecode <- function(df) {
                  "N4")
     )
 
-  var_label(df$N_RECODE) <- "Clinical N"
+  var_label(df$cN_RECODE) <- "Clinical N"
 
   #TNM_CLIN_M
   # # Identifies the clinically determined absence or presence of distant metastasis (cM)
@@ -1143,16 +1142,16 @@ NCDBRecode <- function(df) {
 
 
 
-  df$M_RECODE <- NA
-  df$M_RECODE[df$TNM_CLIN_M %in% c("cMX")] <- 0
-  df$M_RECODE[df$TNM_CLIN_M %in% c("cM0", "cM0(i+)")] <- 1
-  df$M_RECODE[df$TNM_CLIN_M %in% c("cM1", "cM1a", "cM1b", "cM1c", "cM1d")] <- 2
-  df$M_RECODE[df$TNM_CLIN_M %in% c("Not applicable (not defined)")] <- ""
+  df$cM_RECODE <- NA
+  df$cM_RECODE[df$TNM_CLIN_M %in% c("cMX")] <- 0
+  df$cM_RECODE[df$TNM_CLIN_M %in% c("cM0", "cM0(i+)")] <- 1
+  df$cM_RECODE[df$TNM_CLIN_M %in% c("cM1", "cM1a", "cM1b", "cM1c", "cM1d")] <- 2
+  df$cM_RECODE[df$TNM_CLIN_M %in% c("Not applicable (not defined)")] <- ""
 
 
-  df$M_RECODE <-
+  df$cM_RECODE <-
     factor(
-      df$M_RECODE,
+      df$cM_RECODE,
       levels = c(0, 1, 2),
       labels = c("Mx",
                  "M0",
@@ -1160,9 +1159,9 @@ NCDBRecode <- function(df) {
       )
     )
 
-  var_label(df$M_RECODE) <- "Clinical M"
+  var_label(df$cM_RECODE) <- "Clinical M"
 
-  ### TNM_CLIN_STAGE_GROUP - AJCC Clinical Stage Group
+  #TNM_CLIN_STAGE_GROUP - AJCC Clinical Stage Group
   # Identifies the applicable stage group based on the T, N, and M elements as defined
   # by the American Joint Committee on Cancer (AJCC).
   df$TNM_CLIN_STAGE_GROUP <-
@@ -1204,43 +1203,46 @@ NCDBRecode <- function(df) {
         "99"
       ),
       labels = c(
-        "0-cStage 0",
-        "0A-cStage 0A",
-        "0IS-cStage 0is",
-        "1-cStage I",
-        "1A-cStage IA",
-        "1A1-cStage IA1",
-        "1A2-cStage IA2",
-        "1B-cStage IB",
-        "1B1-cStage IB1",
-        "1B2-cStage IB2",
-        "1C-cStage IC",
-        "1S-cStage IS",
-        "2-cStage II",
-        "2A-cStage IIA",
-        "2A1-cStage IIA1",
-        "2A2-cStage IIA2",
-        "2B-cStage IIB",
-        "2C-cStage IIC",
-        "3-cStage III",
-        "3A-cStage IIIA",
-        "3B-cStage IIIB",
-        "3C-cStage IIIC",
-        "3C1-cStage IIIC1",
-        "3C2-cStage IIIC2",
-        "4-cStage IV",
-        "4A-cStage IVA",
-        "4A1-cStage IVA1",
-        "4A2-cStage IVA2",
-        "4B-cStage 4B",
-        "4C-cStage IVC",
-        "OC-Occult",
-        "88-Not applicable",
-        "99-Unknown"
+        "0",
+        "0A",
+        "0is",
+        "I",
+        "IA",
+        "IA1",
+        "IA2",
+        "IB",
+        "IB1",
+        "IB2",
+        "IC",
+        "IS",
+        "II",
+        "IIA",
+        "IIA1",
+        "IIA2",
+        "IIB",
+        "IIC",
+        "III",
+        "IIIA",
+        "IIIB",
+        "IIIC",
+        "IIIC1",
+        "IIIC2",
+        "IV",
+        "IVA",
+        "IVA1",
+        "IVA2",
+        "IVB",
+        "IVC",
+        "Occult",
+        "Not applicable",
+        "Unknown"
       )
     )
 
-  ### TNM_PATH_T - AJCC Pathologic T
+  var_label(df$TNM_CLIN_STAGE_GROUP) <- "AJCC Clinical Stage Group"
+
+
+  #TNM_PATH_T - AJCC Pathologic T
   # Identifies the pathologically-determined tumor size and/or extension (pT) as
   # defined by the American Joint Committee on Cancer (AJCC)
 
@@ -1248,80 +1250,115 @@ NCDBRecode <- function(df) {
     factor(
       df$TNM_PATH_T,
       levels = c(
-        "2A",
-        "X",
-        "0",
-        "A",
-        "IS",
-        "ISPU",
-        "ISPD",
-        "1MI",
-        "1",
-        "1A",
-        "1A1",
-        "1A2",
-        "1B",
-        "1B1",
-        "1B2",
-        "1C",
-        "1D",
-        "2",
-        "2A1",
-        "2A2",
-        "2B",
-        "2C",
-        "2D",
-        "3",
-        "3A",
-        "3B",
-        "3C",
-        "3D",
-        "4",
-        "4A",
-        "4B",
-        "4C",
-        "4D",
-        "4E",
+        "pX",
+        "p0",
+        "pA",
+        "pIS",
+        "pISPU",
+        "pISPD",
+        "p1MI",
+        "p1",
+        "p1A",
+        "p1A1",
+        "p1A2",
+        "p1B",
+        "p1B1",
+        "p1B2",
+        "p1C",
+        "p1D",
+        "p2",
+        "p2A1",
+        "p2A2",
+        "p2B",
+        "p2C",
+        "p2D",
+        "p3",
+        "p3A",
+        "p3B",
+        "p3C",
+        "p3D",
+        "p4",
+        "p4A",
+        "p4B",
+        "p4C",
+        "p4D",
+        "p4E",
         "88"
-      ),
+        ),
       labels = c(
-        "2A-pT2a",
-        "X-pTX",
-        "0-pT0",
-        "A-pTa",
-        "IS-pTis",
-        "ISPU-pTispu",
-        "ISPD-pTispd",
-        "1MI-pT1mic",
-        "1-pT1",
-        "1A-pT1a",
-        "1A1-pT1a1",
-        "1A2-pT1a2",
-        "1B-pT1b",
-        "1B1-pT1b1",
-        "1B2-pT1b2",
-        "1C-pT1c",
-        "1D-pT1d",
-        "2-pT2",
-        "2A1-pT2a1",
-        "2A2-pT2a2",
-        "2B-pT2b",
-        "2C-pT2c",
-        "2D-pT2d",
-        "3-pT3",
-        "3A-pT3a",
-        "3B-pT3b",
-        "3C-pT3c",
-        "3D-pT3d",
-        "4-pT4",
-        "4A-pT4a",
-        "4B-pT4b",
-        "4C-p4c",
-        "4D-p4d",
-        "4E-p4e",
-        "88- Notapplicable"
+        "pTX",
+        "pT0",
+        "pTa",
+        "pTis",
+        "pTispu",
+        "pTispd",
+        "pT1mic",
+        "pT1",
+        "pT1a",
+        "pT1a1",
+        "pT1a2",
+        "pT1b",
+        "pT1b1",
+        "pT1b2",
+        "pT1c",
+        "pT1d",
+        "pT2",
+        "pT2a1",
+        "pT2a2",
+        "pT2b",
+        "pT2c",
+        "pT2d",
+        "pT3",
+        "pT3a",
+        "pT3b",
+        "pT3c",
+        "pT3d",
+        "pT4",
+        "pT4a",
+        "pT4b",
+        "p4c",
+        "p4d",
+        "p4e",
+        "Not applicable"
       )
     )
+
+  df$pT_RECODE <- NA
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pTX")] <- 0
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT0", "pTa")] <- 1
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT1", "pT1a", "pT1a1", "pT1a2", "pT1b", "pT1b1", "pT1b2", "pT1c", "pT1d")] <- 2
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT2", "pT2a", "pT2a1", "pT2a2", "pT2b", "pT2c", "pT2d")] <- 3
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT3", "pT3a", "pT3b", "pT3c", "pT3d")] <- 4
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT4")] <- 5
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT4a")] <-6
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pT4b")] <- 7
+  df$pT_RECODE[df$TNM_PATH_T %in% c("c4c")] <- 8
+  df$pT_RECODE[df$TNM_PATH_T %in% c("c4d")] <- 9
+  df$pT_RECODE[df$TNM_PATH_T %in% c("c4e")] <- 10
+  df$pT_RECODE[df$TNM_PATH_T %in% c("pTis", "pTispu", "pTispd")] <- 11 ## Look into how this is used/what to call these
+
+
+
+  df$pT_RECODE <-
+    factor(
+      df$pT_RECODE,
+      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+      labels = c("Tx",
+                 "T0",
+                 "T1",
+                 "T2",
+                 "T3",
+                 "T4",
+                 "T4a",
+                 "T4b",
+                 "T4c",
+                 "T4d",
+                 "T4e",
+                 "cIs or similar")
+    )
+
+  var_label(df$pT_RECODE) <- "Pathological T"
+
 
   ### TNM_PATH_N - AJCC Pathologic N
   # Identifies the pathologically-determined absence or presence or extent of regional
@@ -1565,7 +1602,7 @@ NCDBRecode <- function(df) {
   ### CS_METS_AT_DX - CS Mets at DX
   # Identifies whether there is metastatic involvement of distant site(s) at the time of
   # diagnosis
-  # codes found at http://web2.facs.org/cstage0205/nasalcavity/NasalCavity_hpb.html
+  # codes found at http://web2.facs.org/205/nasalcavity/NasalCavity_hpb.html
 
   df$CS_METS_AT_DX <-
     factor(
