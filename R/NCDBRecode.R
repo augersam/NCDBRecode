@@ -2138,8 +2138,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Surgery performed", # surgery of the primary site was performed
         "Not part of planned treatment", # Surgery of the primary site was not performed because it was not part of the planned first course treatment
-        "Risk factors", # Surgery of the primary site was not recommended/performed because it was contraindicated due to patient risk factors (comorbid conditions, advanced age, etc.)
-        "Patient died prior", # Surgery of the primary site was not performed because the patient died prior to planned or recommended surgery.
+        "Contraindicated, risk factors", # Surgery of the primary site was not recommended/performed because it was contraindicated due to patient risk factors (comorbid conditions, advanced age, etc.)
+        "Recommended, patient deceased", # Surgery of the primary site was not performed because the patient died prior to planned or recommended surgery.
         "Recommended, no reason provided", # Surgery of the primary site was not performed; it was recommended by the patient=s physician, but was not performed as part of the first course of therapy. No reason was noted in patient record.
         "Recommended, refused by patient", # Surgery of the primary site was not performed; it was recommended by the patient=s physician, but this treatment was refused by the patient, the patient=s family member, or the patient=s guardian. The refusal was noted in patient record.
         "Recommended, unknown if performed", # Surgery of the primary site was recommended, but it is unknown if it was performed. Further follow-up is recommended.
@@ -2157,8 +2157,8 @@ NCDBRecode <- function(df) {
 
   df$ANY_SURGERY[df$REASON_FOR_NO_SURGERY %in% c(
     "Not part of planned treatment",
-    "Risk factors",
-    "Patient died prior",
+    "Contraindicated, risk factors",
+    "Recommended, patient deceased",
     "Recommended, no reason provided",
     "Recommended, refused by patient",
     "Recommended, unknown if performed",
@@ -2589,8 +2589,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Administered",
         "Not planned", #Radiation therapy was not administered because it was not part of the planned first course treatment.",
-        "Risk factors", #Radiation therapy was not recommended/administered because it was contraindicated due to other patient risk factors (comorbid conditions, advanced age, etc.).",
-        "Recommended, deceased", #Radiation therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #Radiation therapy was not recommended/administered because it was contraindicated due to other patient risk factors (comorbid conditions, advanced age, etc.).",
+        "Recommended, patient deceased", #Radiation therapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason", #Radiation therapy was not administered; it was recommended by the patient’s physician, but was not administered as part of first course treatment. No reason was noted in patient record.",
         "Recommended, refused", #Radiation therapy was not administered; it was recommended by the patient’s physician, but this treatment was refused by the patient, the patient’s family member, or the patient’s guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #Radiation therapy was recommended, but it is unknown whether it was administered.",
@@ -2606,8 +2606,8 @@ NCDBRecode <- function(df) {
   df$ANY_RADIATION[df$REASON_FOR_NO_RADIATION %in% c("Administered")] <- 1
   df$ANY_RADIATION[df$REASON_FOR_NO_RADIATION %in% c(
     "Not planned",
-    "Risk factors",
-    "Recommended, deceased",
+    "Contraindicated, risk factors",
+    "Recommended, patient deceased",
     "Recommended, no reason",
     "Recommended, refused",
     "Recommended, unknown if administered",
@@ -2647,8 +2647,8 @@ NCDBRecode <- function(df) {
         "Administered, unknown details", #Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
         "Single-agent chemotherapy", # administered as first course therapy.",
         "Multiagent chemotherapy", # administered as first course therapy.",
-        "Risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #Chemotherapy was recommended, but it is unknown if it was administered.",
@@ -2667,8 +2667,8 @@ NCDBRecode <- function(df) {
 
   df$ANY_CHEMO[df$RX_SUMM_CHEMO %in% c(
     "Not planned",
-    "Risk factors",
-    "Patient deceased",
+    "Contraindicated, risk factors",
+    "Recommended, patient deceased",
     "Recommended, no reason given",
     "Recommended, refused",
     "Recommended, unknown if administered",
@@ -2697,8 +2697,8 @@ NCDBRecode <- function(df) {
         "Administered, unknown details", #Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
         "Single-agent chemotherapy", # administered as first course therapy.",
         "Multiagent chemotherapy", # administered as first course therapy.",
-        "Risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #Chemotherapy was recommended, but it is unknown if it was administered.",
@@ -2727,8 +2727,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
         "Administered, first course", #hormone therapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #hormone therapy was recommended, but it is unknown if it was administered.",
@@ -2736,16 +2736,15 @@ NCDBRecode <- function(df) {
       )
     )
 
-  # TODO no clue why this isn't
-  val_label(df$RX_SUMM_HORMONE) <- "Hormone therapy"
+  var_label(df$RX_SUMM_HORMONE) <- "Hormone therapy"
 
   #calculated column to simplify hormone treatment to a binary
   df$ANY_HORMONE <- NA
   df$ANY_HORMONE[df$RX_SUMM_HORMONE %in% c("Administered, first course")] <-1
   df$ANY_HORMONE[df$RX_SUMM_HORMONE %in% c(
     "Not planned",
-    "Risk factors",
-    "Patient deceased",
+    "Contraindicated, risk factors",
+    "Recommended, patient deceased",
     "Recommended, no reason given",
     "Recommended, refused",
     "Recommended, unknown if administered",
@@ -2776,8 +2775,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
         "Administered, first course", #hormone therapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #hormone therapy was recommended, but it is unknown if it was administered.",
@@ -2807,8 +2806,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
         "Administered, first course", #immunotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #immunotherapy was recommended, but it is unknown if it was administered.",
@@ -2821,8 +2820,8 @@ NCDBRecode <- function(df) {
   df$ANY_IMMUNO[df$RX_SUMM_IMMUNOTHERAPY %in% c("Administered, first course")] <- 1
   df$ANY_IMMUNO[df$RX_SUMM_IMMUNOTHERAPY %in% c(
     "Not planned",
-    "Risk factors",
-    "Patient deceased",
+    "Contraindicated, risk factors",
+    "Recommended, patient deceased",
     "Recommended, no reason given",
     "Recommended, refused",
     "Recommended, unknown if administered",
@@ -2853,8 +2852,8 @@ NCDBRecode <- function(df) {
       labels = c(
         "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
         "Administered, first course", #immunotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Contraindicated, risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
         "Recommended, no reason given", #immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
         "Recommended, refused", #immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
         "Recommended, unknown if administered", #immunotherapy was recommended, but it is unknown if it was administered.",
@@ -2870,7 +2869,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$DX_IMMUNO_STARTED_DAYS) <- "Immunotherapy, days from diagnosis"
 
-  ### RX_SUMM_TRNSPLNT_ENDO, Hematologic Transplant and endocrine procedures
+  ### RX_SUMM_TRNSPLNT_ENDO
   # identifies systemic therapeutic procedures performed as part of the first course of
   # treatment at this and all other facilities. If none of these procedures was performed,
   # then this item records the reason why not. These procedures include bone marrow
@@ -2881,25 +2880,55 @@ NCDBRecode <- function(df) {
       df$RX_SUMM_TRNSPLNT_ENDO,
       levels = c(00, 10, 11, 12, 20, 30, 40, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "No transplant procedure or endocrine therapy was administered as part of first course therapy. Diagnosed at autopsy.",
-        "A bone marrow transplant procedure was administered, but the type was not specified.",
-        "Bone marrow transplant autologous.",
-        "Bone marrow transplant allogeneic.",
-        "Stem cell harvest and infusion.",
-        "Endocrine surgery and/or endocrine radiation therapy.",
-        "Combination of endocrine surgery and/or radiation with a transplant procedure. (Combination of codes 30 and 10, 11, 12, or 20.)",
-        "Hematologic transplant and/or endocrine surgery/radiation was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Hematologic transplant and/or endocrine surgery/radiation was not administered because the patient died prior to planned or recommended therapy.",
-        "Hematologic transplant and/or endocrine surgery/radiation was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Hematologic transplant and/or endocrine surgery/radiation was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Hematologic transplant and/or endocrine surgery/radiation was recommended, but it is unknown if it was administered.",
-        "It is unknown whether hematologic transplant and/or endocrine surgery/radiation was recommended or administered because it is not stated in patient record. Death certificate only."
+        "None", #No transplant procedure or endocrine therapy was administered as part of first course therapy. Diagnosed at autopsy.",
+        "Bone marrow transplant, unspecified", #A bone marrow transplant procedure was administered, but the type was not specified.",
+        "Bone marrow transplant autologous",
+        "Bone marrow transplant allogeneic",
+        "Stem cell harvest and infusion",
+        "Endocrine surgery and/or endocrine radiation therapy",
+        "Combination of endocrine surgery and/or radiation with a transplant procedure", # (Combination of codes 30 and 10, 11, 12, or 20.)",
+        "Contraindicated, risk factors", #Hematologic transplant and/or endocrine surgery/radiation was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Recommended, patient deceased", #Hematologic transplant and/or endocrine surgery/radiation was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason", #Hematologic transplant and/or endocrine surgery/radiation was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #Hematologic transplant and/or endocrine surgery/radiation was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown", #Hematologic transplant and/or endocrine surgery/radiation was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether hematologic transplant and/or endocrine surgery/radiation was recommended or administered because it is not stated in patient record. Death certificate only."
       )
     )
 
-  ### RX_SUMM_SYSTEMIC_SUR_SEQ - Systemic Surgery Sequence
+  var_label(df$RX_SUMM_TRNSPLNT_ENDO) <- "Hematologic Transplant and endocrine procedures"
+
+  #RX_SUMM_SYSTEMIC_SUR_SEQ
   # Records the sequencing of systemic treatment and surgical procedures given as
   # part of the first course of treatment.
+  # Note: this is a bit of a tricky one. Be sure to read the descriptions carefully.
+
+  df$RX_SUMM_SYSTEMIC_SUR_SEQ <-
+    factor(
+      df$RX_SUMM_SYSTEMIC_SUR_SEQ,
+      levels = c(0, 2, 3, 4, 5, 6, 7, 9),
+      labels = c(
+        "No systemic or surgical treatment, or unknown",
+        #No systemic therapy was given; and/or no surgical procedure of primary site; no scope of regional lymph node surgery; no surgery to other regional site(s), distant site(s), or distant lymph node(s); or no reconstructive surgery was performed. Or: It is unknown whether both surgery and systemic treatment were provided.",
+        "Systemic treatment before surgery",
+        #Systemic therapy was given before surgical procedure of primary site; scope of regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) was performed.",
+        "Systemic treatment after surgery",
+        #Systemic therapy was given after surgical procedure of primary site; scope of regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) was performed.",
+        "At least two courses systemic treatment before surgery and two after",
+        #At least two courses of systemic therapy were given before and at least two more after a surgical procedure of primary site; scope of regional lymph node sugery; surgery to other regional site(s), or distant site(s), or lymph node(s) was performed.",
+        "Intraoperative systemic therapy",
+        #Intraoperative systemic therapy was given during surgical procedure of primary site; scope of regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s).",
+        "Intraoperative systemic and systemic therapy before and/or after surgery",
+        #Intraoperative systemic therapy was given during surgical procedure of primary site; scope of regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) with other systemic therapy administered before or after surgical procedure of primary site; scope of regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) was performed.",
+        "Systemic therapy between two procedures",
+        #Systemic therapy was administered between two separate surgical procedures to the primary site; regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) with other systemic therapy adminstered before or after surgical procedures to the primary site; regional lymph node surgery; surgery to other regional site(s), distant site(s), or distant lymph node(s) was performed.",
+        "Surgery and systemic, sequence unknown"
+        #Both surgery and systemic therapy were provided, but the sequence is unknown."
+
+                 )
+    )
+
+  var_label(df$RX_SUMM_SYSTEMIC_SUR_SEQ) <- "Systemic treatment and surgery sequence"
 
   ### RX_SUMM_OTHER - Other Treatment
   # Identifies other treatment that cannot be defined as surgery, radiation, or systemic
@@ -2920,6 +2949,8 @@ NCDBRecode <- function(df) {
         "Unknown"
       )
     )
+
+  var_label(df$RX_SUMM_OTHER) <- "Systemic Surgery Sequence"
 
   ### RX_HOSP_OTHER - Other treatment at this facility
   # Identifies other treatment given at the reporting facility that cannot be defined as
