@@ -1009,13 +1009,14 @@ NCDBRecode <- function(df) {
   df$T_RECODE[df$TNM_CLIN_T %in% c("c4c")] <- 8
   df$T_RECODE[df$TNM_CLIN_T %in% c("c4d")] <- 9
   df$T_RECODE[df$TNM_CLIN_T %in% c("c4e")] <- 10
+  df$T_RECODE[df$TNM_CLIN_T %in% c("pTis", "pTispu", "pTispd")] <- 11 ## Look into how this is used/what to call these
 
 
 
   df$T_RECODE <-
     factor(
       df$T_RECODE,
-      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
       labels = c("Tx",
                  "T0",
                  "T1",
@@ -1026,12 +1027,13 @@ NCDBRecode <- function(df) {
                  "T4b",
                  "T4c",
                  "T4d",
-                 "T4e")
+                 "T4e",
+                 "cIs or similar")
     )
 
-  var_label(df$T_RECODE) <- "Tumor Size"
+  var_label(df$T_RECODE) <- "Clinical T"
 
-  ### TNM_CLIN_N
+  #TNM_CLIN_N
   # Identifies the clinically determined absence or presence of regional lymph node
   # (cN) metastasis and describes the extent of the regional lymph node metastasis as
   # defined by the American Joint Committee on Cancer (AJCC).
@@ -1114,12 +1116,12 @@ NCDBRecode <- function(df) {
                  "N2B",
                  "N2C",
                  "N3",
-                 "4")
+                 "N4")
     )
 
-  var_label(df$N_RECODE) <- "Nodal metastasis"
+  var_label(df$N_RECODE) <- "Clinical N"
 
-  # ### TNM_CLIN_M
+  #TNM_CLIN_M
   # # Identifies the clinically determined absence or presence of distant metastasis (cM)
   # # as defined by the American Joint Committee on Cancer (AJCC).
   df$TNM_CLIN_M <-
@@ -1145,340 +1147,339 @@ NCDBRecode <- function(df) {
   df$M_RECODE[df$TNM_CLIN_M %in% c("cMX")] <- 0
   df$M_RECODE[df$TNM_CLIN_M %in% c("cM0", "cM0(i+)")] <- 1
   df$M_RECODE[df$TNM_CLIN_M %in% c("cM1", "cM1a", "cM1b", "cM1c", "cM1d")] <- 2
-  df$M_RECODE[df$TNM_CLIN_M %in% c("Not applicable (not defined)")] <- 3
+  df$M_RECODE[df$TNM_CLIN_M %in% c("Not applicable (not defined)")] <- ""
 
 
   df$M_RECODE <-
     factor(
       df$M_RECODE,
-      levels = c(0, 1, 2, 3),
-      labels = c("X",
-                 "0",
-                 "1",
-                 "Not applicable"
+      levels = c(0, 1, 2),
+      labels = c("Mx",
+                 "M0",
+                 "M1"
       )
     )
 
-  var_label(df$M_RECODE) <- "M"
+  var_label(df$M_RECODE) <- "Clinical M"
 
-  # ### TNM_CLIN_STAGE_GROUP - AJCC Clinical Stage Group
-  # # Identifies the applicable stage group based on the T, N, and M elements as defined
-  # # by the American Joint Committee on Cancer (AJCC).
-  # df$TNM_CLIN_STAGE_GROUP <-
-  #   factor(
-  #     df$TNM_CLIN_STAGE_GROUP,
-  #     levels = c(
-  #       "0",
-  #       "0A",
-  #       "0IS",
-  #       "1",
-  #       "1A",
-  #       "1A1",
-  #       "1A2",
-  #       "1B",
-  #       "1B1",
-  #       "1B2",
-  #       "1C",
-  #       "1S",
-  #       "2",
-  #       "2A",
-  #       "2A1",
-  #       "2A2",
-  #       "2B",
-  #       "2C",
-  #       "3",
-  #       "3A",
-  #       "3B",
-  #       "3C",
-  #       "3C1",
-  #       "3C2",
-  #       "4",
-  #       "4A",
-  #       "4A1",
-  #       "4A2",
-  #       "4B",
-  #       "4C",
-  #       "OC",
-  #       "88",
-  #       "99"
-  #     ),
-  #     labels = c(
-  #       "0-cStage 0",
-  #       "0A-cStage 0A",
-  #       "0IS-cStage 0is",
-  #       "1-cStage I",
-  #       "1A-cStage IA",
-  #       "1A1-cStage IA1",
-  #       "1A2-cStage IA2",
-  #       "1B-cStage IB",
-  #       "1B1-cStage IB1",
-  #       "1B2-cStage IB2",
-  #       "1C-cStage IC",
-  #       "1S-cStage IS",
-  #       "2-cStage II",
-  #       "2A-cStage IIA",
-  #       "2A1-cStage IIA1",
-  #       "2A2-cStage IIA2",
-  #       "2B-cStage IIB",
-  #       "2C-cStage IIC",
-  #       "3-cStage III",
-  #       "3A-cStage IIIA",
-  #       "3B-cStage IIIB",
-  #       "3C-cStage IIIC",
-  #       "3C1-cStage IIIC1",
-  #       "3C2-cStage IIIC2",
-  #       "4-cStage IV",
-  #       "4A-cStage IVA",
-  #       "4A1-cStage IVA1",
-  #       "4A2-cStage IVA2",
-  #       "4B-cStage 4B",
-  #       "4C-cStage IVC",
-  #       "OC-Occult",
-  #       "88-Not applicable",
-  #       "99-Unknown"
-  #     )
-  #   )
-  #
-  # ### TNM_PATH_T - AJCC Pathologic T
-  # # Identifies the pathologically-determined tumor size and/or extension (pT) as
-  # # defined by the American Joint Committee on Cancer (AJCC)
-  #
-  # df$TNM_PATH_T <-
-  #   factor(
-  #     df$TNM_PATH_T,
-  #     levels = c(
-  #       "2A",
-  #       "X",
-  #       "0",
-  #       "A",
-  #       "IS",
-  #       "ISPU",
-  #       "ISPD",
-  #       "1MI",
-  #       "1",
-  #       "1A",
-  #       "1A1",
-  #       "1A2",
-  #       "1B",
-  #       "1B1",
-  #       "1B2",
-  #       "1C",
-  #       "1D",
-  #       "2",
-  #       "2A1",
-  #       "2A2",
-  #       "2B",
-  #       "2C",
-  #       "2D",
-  #       "3",
-  #       "3A",
-  #       "3B",
-  #       "3C",
-  #       "3D",
-  #       "4",
-  #       "4A",
-  #       "4B",
-  #       "4C",
-  #       "4D",
-  #       "4E",
-  #       "88"
-  #     ),
-  #     labels = c(
-  #       "2A-pT2a",
-  #       "X-pTX",
-  #       "0-pT0",
-  #       "A-pTa",
-  #       "IS-pTis",
-  #       "ISPU-pTispu",
-  #       "ISPD-pTispd",
-  #       "1MI-pT1mic",
-  #       "1-pT1",
-  #       "1A-pT1a",
-  #       "1A1-pT1a1",
-  #       "1A2-pT1a2",
-  #       "1B-pT1b",
-  #       "1B1-pT1b1",
-  #       "1B2-pT1b2",
-  #       "1C-pT1c",
-  #       "1D-pT1d",
-  #       "2-pT2",
-  #       "2A1-pT2a1",
-  #       "2A2-pT2a2",
-  #       "2B-pT2b",
-  #       "2C-pT2c",
-  #       "2D-pT2d",
-  #       "3-pT3",
-  #       "3A-pT3a",
-  #       "3B-pT3b",
-  #       "3C-pT3c",
-  #       "3D-pT3d",
-  #       "4-pT4",
-  #       "4A-pT4a",
-  #       "4B-pT4b",
-  #       "4C-p4c",
-  #       "4D-p4d",
-  #       "4E-p4e",
-  #       "88- Notapplicable"
-  #     )
-  #   )
-  #
-  # ### TNM_PATH_N - AJCC Pathologic N
-  # # Identifies the pathologically-determined absence or presence or extent of regional
-  # # lymph node (pN) metastasis as defined by the American Joint Committee on
-  # # Cancer (AJCC)
-  #
-  # df$TNM_PATH_N <-
-  #   factor(
-  #     df$TNM_PATH_N,
-  #     levels = c(
-  #       "X",
-  #       "0",
-  #       "0I",
-  #       "0M",
-  #       "1MI",
-  #       "0A",
-  #       "0B",
-  #       "1",
-  #       "1A",
-  #       "1B",
-  #       "1C",
-  #       "2",
-  #       "2A",
-  #       "2B",
-  #       "2C",
-  #       "3",
-  #       "3A",
-  #       "3B",
-  #       "3C",
-  #       "4",
-  #       "88"
-  #     ),
-  #     labels = c(
-  #       "X-pNX",
-  #       "0-pN0",
-  #       "0I-pN0i0I+ pN0i+",
-  #       "0M-pN0m0M+ pN0m+",
-  #       "1MI-pN1mi",
-  #       "0A-pN0a",
-  #       "0B-pN0b",
-  #       "1-pN1",
-  #       "1A-pN1a",
-  #       "1B-pN1b",
-  #       "1C-pN1c",
-  #       "2-pN2",
-  #       "2A-pN2a",
-  #       "2B-pN2b",
-  #       "2C-pN2c",
-  #       "3-pN3",
-  #       "3A-pN3a",
-  #       "3B-pN3b",
-  #       "3C-pN3c",
-  #       "4-pN4",
-  #       "88-Not applicable"
-  #     )
-  #   )
-  #
-  # ### TNM_PATH_M - AJCC Pathologic M
-  # # Identifies the pathologically determined tumor size and/or extension (pT) as
-  # # defined by the American Joint Committee on Cancer (AJCC)
-  #
-  # df$TNM_PATH_M <-
-  #   factor(
-  #     df$TNM_PATH_M,
-  #     levels = c("X", "0", "0I", "1", "1A", "1B", "1C", "1D", "88"),
-  #     labels = c(
-  #       "X-pMX",
-  #       "0-pM0",
-  #       "0I+-pM0(i+)",
-  #       "1-pM1",
-  #       "1A-pM1a",
-  #       "1B-pM1b",
-  #       "1C-pM1c",
-  #       "1D-pM1d",
-  #       "88-Not applicable (not defined)"
-  #     )
-  #   )
-  #
-  # ### TNM_PATH_STAGE_GROUP
-  # # Identifies the pathologically-determiend anatomic extent of disease based on the T,
-  # # N, and M elements as defined by the American Joint Committee on Cancer (AJCC).
-  #
-  # df$TNM_PATH_STAGE_GROUP <-
-  #   factor(
-  #     df$TNM_PATH_STAGE_GROUP,
-  #     levels = c(
-  #       "0",
-  #       "0A",
-  #       "0IS",
-  #       "1",
-  #       "1A",
-  #       "1A1",
-  #       "1A2",
-  #       "1B",
-  #       "1B1",
-  #       "1B2",
-  #       "1C",
-  #       "1S",
-  #       "2",
-  #       "2A",
-  #       "2A1",
-  #       "2A2",
-  #       "2B",
-  #       "2C",
-  #       "3",
-  #       "3A",
-  #       "3B",
-  #       "3C",
-  #       "3C1",
-  #       "3C2",
-  #       "4",
-  #       "4A",
-  #       "4A1",
-  #       "4A2",
-  #       "4B",
-  #       "4C",
-  #       "OC",
-  #       "88",
-  #       "99",
-  #       "Blank"
-  #     ),
-  #     labels = c(
-  #       "0-pStage 0",
-  #       "0A-pStage 0A",
-  #       "0IS-pStage 0is",
-  #       "1-pStage I",
-  #       "1A-pStage IA",
-  #       "1A1-pStage IA1",
-  #       "1A2-pStage IA2",
-  #       "1B-pStage IB",
-  #       "1B1-pStage IB1",
-  #       "1B2-pStage IB2",
-  #       "1C-pStage IC",
-  #       "1S-pStage IS",
-  #       "2-pStage II",
-  #       "2A-pStage IIA",
-  #       "2A1-pStage IIA1",
-  #       "2A2-pStage IIA2",
-  #       "2B-pStage IIB",
-  #       "2C-pStage IIC",
-  #       "3-pStage III",
-  #       "3A-pStage IIIA",
-  #       "3B-pStage IIIB",
-  #       "3C-pStage IIIC",
-  #       "3C1-pStage IIIC1",
-  #       "3C2-pStage IIIC2",
-  #       "4-pStage IV",
-  #       "4A-pStage IVA",
-  #       "4A1-pStage IVA1",
-  #       "4A2-pStage IVA2",
-  #       "4B-pStage 4B",
-  #       "4C-pStage IVC",
-  #       "OC-Occult",
-  #       "88-Not applicable",
-  #       "99-Unknown",
-  #       "Blank-No pathologic staging for this case (2008+ only)"
-  #     )
-  #   )
+  ### TNM_CLIN_STAGE_GROUP - AJCC Clinical Stage Group
+  # Identifies the applicable stage group based on the T, N, and M elements as defined
+  # by the American Joint Committee on Cancer (AJCC).
+  df$TNM_CLIN_STAGE_GROUP <-
+    factor(
+      df$TNM_CLIN_STAGE_GROUP,
+      levels = c(
+        "0",
+        "0A",
+        "0IS",
+        "1",
+        "1A",
+        "1A1",
+        "1A2",
+        "1B",
+        "1B1",
+        "1B2",
+        "1C",
+        "1S",
+        "2",
+        "2A",
+        "2A1",
+        "2A2",
+        "2B",
+        "2C",
+        "3",
+        "3A",
+        "3B",
+        "3C",
+        "3C1",
+        "3C2",
+        "4",
+        "4A",
+        "4A1",
+        "4A2",
+        "4B",
+        "4C",
+        "OC",
+        "88",
+        "99"
+      ),
+      labels = c(
+        "0-cStage 0",
+        "0A-cStage 0A",
+        "0IS-cStage 0is",
+        "1-cStage I",
+        "1A-cStage IA",
+        "1A1-cStage IA1",
+        "1A2-cStage IA2",
+        "1B-cStage IB",
+        "1B1-cStage IB1",
+        "1B2-cStage IB2",
+        "1C-cStage IC",
+        "1S-cStage IS",
+        "2-cStage II",
+        "2A-cStage IIA",
+        "2A1-cStage IIA1",
+        "2A2-cStage IIA2",
+        "2B-cStage IIB",
+        "2C-cStage IIC",
+        "3-cStage III",
+        "3A-cStage IIIA",
+        "3B-cStage IIIB",
+        "3C-cStage IIIC",
+        "3C1-cStage IIIC1",
+        "3C2-cStage IIIC2",
+        "4-cStage IV",
+        "4A-cStage IVA",
+        "4A1-cStage IVA1",
+        "4A2-cStage IVA2",
+        "4B-cStage 4B",
+        "4C-cStage IVC",
+        "OC-Occult",
+        "88-Not applicable",
+        "99-Unknown"
+      )
+    )
+
+  ### TNM_PATH_T - AJCC Pathologic T
+  # Identifies the pathologically-determined tumor size and/or extension (pT) as
+  # defined by the American Joint Committee on Cancer (AJCC)
+
+  df$TNM_PATH_T <-
+    factor(
+      df$TNM_PATH_T,
+      levels = c(
+        "2A",
+        "X",
+        "0",
+        "A",
+        "IS",
+        "ISPU",
+        "ISPD",
+        "1MI",
+        "1",
+        "1A",
+        "1A1",
+        "1A2",
+        "1B",
+        "1B1",
+        "1B2",
+        "1C",
+        "1D",
+        "2",
+        "2A1",
+        "2A2",
+        "2B",
+        "2C",
+        "2D",
+        "3",
+        "3A",
+        "3B",
+        "3C",
+        "3D",
+        "4",
+        "4A",
+        "4B",
+        "4C",
+        "4D",
+        "4E",
+        "88"
+      ),
+      labels = c(
+        "2A-pT2a",
+        "X-pTX",
+        "0-pT0",
+        "A-pTa",
+        "IS-pTis",
+        "ISPU-pTispu",
+        "ISPD-pTispd",
+        "1MI-pT1mic",
+        "1-pT1",
+        "1A-pT1a",
+        "1A1-pT1a1",
+        "1A2-pT1a2",
+        "1B-pT1b",
+        "1B1-pT1b1",
+        "1B2-pT1b2",
+        "1C-pT1c",
+        "1D-pT1d",
+        "2-pT2",
+        "2A1-pT2a1",
+        "2A2-pT2a2",
+        "2B-pT2b",
+        "2C-pT2c",
+        "2D-pT2d",
+        "3-pT3",
+        "3A-pT3a",
+        "3B-pT3b",
+        "3C-pT3c",
+        "3D-pT3d",
+        "4-pT4",
+        "4A-pT4a",
+        "4B-pT4b",
+        "4C-p4c",
+        "4D-p4d",
+        "4E-p4e",
+        "88- Notapplicable"
+      )
+    )
+
+  ### TNM_PATH_N - AJCC Pathologic N
+  # Identifies the pathologically-determined absence or presence or extent of regional
+  # lymph node (pN) metastasis as defined by the American Joint Committee on
+  # Cancer (AJCC)
+
+  df$TNM_PATH_N <-
+    factor(
+      df$TNM_PATH_N,
+      levels = c(
+        "X",
+        "0",
+        "0I",
+        "0M",
+        "1MI",
+        "0A",
+        "0B",
+        "1",
+        "1A",
+        "1B",
+        "1C",
+        "2",
+        "2A",
+        "2B",
+        "2C",
+        "3",
+        "3A",
+        "3B",
+        "3C",
+        "4",
+        "88"
+      ),
+      labels = c(
+        "X-pNX",
+        "0-pN0",
+        "0I-pN0i0I+ pN0i+",
+        "0M-pN0m0M+ pN0m+",
+        "1MI-pN1mi",
+        "0A-pN0a",
+        "0B-pN0b",
+        "1-pN1",
+        "1A-pN1a",
+        "1B-pN1b",
+        "1C-pN1c",
+        "2-pN2",
+        "2A-pN2a",
+        "2B-pN2b",
+        "2C-pN2c",
+        "3-pN3",
+        "3A-pN3a",
+        "3B-pN3b",
+        "3C-pN3c",
+        "4-pN4",
+        "88-Not applicable"
+      )
+    )
+
+  ### TNM_PATH_M - AJCC Pathologic M
+  # Identifies the pathologically determined tumor size and/or extension (pT) as
+  # defined by the American Joint Committee on Cancer (AJCC)
+
+  df$TNM_PATH_M <-
+    factor(
+      df$TNM_PATH_M,
+      levels = c("X", "0", "0I", "1", "1A", "1B", "1C", "1D", "88"),
+      labels = c(
+        "X-pMX",
+        "0-pM0",
+        "0I+-pM0(i+)",
+        "1-pM1",
+        "1A-pM1a",
+        "1B-pM1b",
+        "1C-pM1c",
+        "1D-pM1d",
+        "88-Not applicable (not defined)"
+      )
+    )
+
+  ### TNM_PATH_STAGE_GROUP
+  # Identifies the pathologically-determiend anatomic extent of disease based on the T,
+  # N, and M elements as defined by the American Joint Committee on Cancer (AJCC).
+
+  df$TNM_PATH_STAGE_GROUP <-
+    factor(
+      df$TNM_PATH_STAGE_GROUP,
+      levels = c(
+        "0",
+        "0A",
+        "0IS",
+        "1",
+        "1A",
+        "1A1",
+        "1A2",
+        "1B",
+        "1B1",
+        "1B2",
+        "1C",
+        "1S",
+        "2",
+        "2A",
+        "2A1",
+        "2A2",
+        "2B",
+        "2C",
+        "3",
+        "3A",
+        "3B",
+        "3C",
+        "3C1",
+        "3C2",
+        "4",
+        "4A",
+        "4A1",
+        "4A2",
+        "4B",
+        "4C",
+        "OC",
+        "88",
+        "99",
+        "Blank"
+      ),
+      labels = c(
+        "0-pStage 0",
+        "0A-pStage 0A",
+        "0IS-pStage 0is",
+        "1-pStage I",
+        "1A-pStage IA",
+        "1A1-pStage IA1",
+        "1A2-pStage IA2",
+        "1B-pStage IB",
+        "1B1-pStage IB1",
+        "1B2-pStage IB2",
+        "1C-pStage IC",
+        "1S-pStage IS",
+        "2-pStage II",
+        "2A-pStage IIA",
+        "2A1-pStage IIA1",
+        "2A2-pStage IIA2",
+        "2B-pStage IIB",
+        "2C-pStage IIC",
+        "3-pStage III",
+        "3A-pStage IIIA",
+        "3B-pStage IIIB",
+        "3C-pStage IIIC",
+        "3C1-pStage IIIC1",
+        "3C2-pStage IIIC2",
+        "4-pStage IV",
+        "4A-pStage IVA",
+        "4A1-pStage IVA1",
+        "4A2-pStage IVA2",
+        "4B-pStage 4B",
+        "4C-pStage IVC",
+        "OC-Occult",
+        "88-Not applicable",
+        "99-Unknown",
+        "Blank-No pathologic staging for this case (2008+ only)"
+      )
+    )
 
   ### ANALYTIC_STAGE_GROUP - NCDB Analytic Stage Group
   # Analytic Stage Group is assigned the value of reported Pathologic Stage Group.
