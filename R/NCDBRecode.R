@@ -2047,8 +2047,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$MARGINS_RECODE) <- "MARGINS (recoded)"
 
-
-  ### RX_SUMM_SCOPE_REG_LN_SUR - Scope of regional LN Surgery
+  #RX_SUMM_SCOPE_REG_LN_SUR
   # Identifies the removal, biopsy, or aspiration of regional lymph node(s) at the time of
   # surgery of the primary site or during a separate surgical event.
 
@@ -2066,8 +2065,24 @@ NCDBRecode <- function(df) {
 
   var_label(df$RX_SUMM_SCOPE_REG_LN_SUR) <- "Scope of regional lymph node surgery"
 
+  #RX_SUMM_SCOPE_REG_LN_2012
+  # Identifies the removal, biopsy, or aspiration of regional lymph node(s) at the time of
+  # surgery of the primary site or during a separate surgical event.
+  # TODO bad link on site, can't find values
 
-  ### RX_SUMM_SURG_OTH_REGDIS - Surgery Other Site
+  # df$RX_SUMM_SCOPE_REG_LN_2012 <-
+  #   factor(
+  #     df$RX_SUMM_SCOPE_REG_LN_2012,
+  #     levels = c(0, 1, 2, 3, 4, 5, 6, 7, 9),
+  #     labels = c(""
+  #     )
+  #   )
+
+
+  #var_label(df$RX_SUMM_SCOPE_REG_LN_2012) <- "Scope of regional lymph node surgery"
+
+
+  #RX_SUMM_SURG_OTH_REGDIS
   # Records the surgical removal of distant lymph nodes or other tissue(s)/organ(s)
   # beyond the primary site.
 
@@ -2076,26 +2091,26 @@ NCDBRecode <- function(df) {
       df$RX_SUMM_SURG_OTH_REGDIS,
       levels = c(0, 1, 2, 3, 4, 5, 9),
       labels = c(
-        "None No nonprimary surgical site resection was performed. Diagnosed at autopsy.",
-        "Nonprimary surgical procedure performed. Nonprimary surgical resection to other site(s), unknown if whether the site(s) is regional or distant.",
-        "Nonprimary surgical procedure to other regional sites Resection of regional site.",
-        "Nonprimary surgical procedure to distant lymph node(s) Resection of distant lymph node(s) .",
-        "Nonprimary surgical procedure to distant Resection of distant site.",
-        "Combination of codes Any combination of surgical procedures 2, 3, or 4.",
-        "Unknown It is unknown whether any surgical procedure of a nonprimary site was performed. Death certificate only."
+        "None", # No nonprimary surgical site resection was performed. Diagnosed at autopsy.",
+        "Nonprimary surgical procedure performed", # Nonprimary surgical resection to other site(s), unknown if whether the site(s) is regional or distant.",
+        "Nonprimary surgical procedure to other regional sites", # Resection of regional site.",
+        "Nonprimary surgical procedure to distant lymph node(s)", # Resection of distant lymph node(s) .",
+        "Nonprimary surgical procedure to distant site", # Resection of distant site.",
+        "Combination of codes", # Any combination of surgical procedures 2, 3, or 4.",
+        "Unknown" # It is unknown whether any surgical procedure of a non primary site was performed. Death certificate only."
       )
     )
 
-
   var_label(df$RX_SUMM_SURG_OTH_REGDIS) <- "Surgery at other sites"
 
-  ### SURG_DISCHARGE_DAYS - Surgical Inpatient Stay, Days from Surgery
+  #SURG_DISCHARGE_DAYS
   # The number of days between the date the most definitive surgical procedure was
   # performed on the primary site (NAACCR Item #3170) and the date the patient was
   # discharged following primary site surgery (NAACCR Item #3180)
 
+  var_label(df$SURG_DISCHARGE_DAYS) < "Surgical Inpatient Stay, Days from Surgery"
 
-  ### READM_HOSP_30_DAYS - Readmission within 30 days of Surgical Discharge
+  #READM_HOSP_30_DAYS
   # Records a readmission to the same hospital, for the same illness, within 30 days of
   # discharge following hospitalization for surgical resection of the primary site
 
@@ -2104,77 +2119,78 @@ NCDBRecode <- function(df) {
       df$READM_HOSP_30_DAYS,
       levels = c(0, 1, 2, 3, 9),
       labels = c(
-        "No surgical procedure of the primary site was performed, or the patient was not readmitted to the same hospital within 30 days of discharge.",
-        "A patient was surgically treated and was readmitted to the same hospital within 30 days of being discharged. This readmission was unplanned.",
-        "A patient was surgically treated and was then readmitted to the same hospital within 30 days of-being discharged. This readmission was planned (chemotherapy port insertion, revision of colostomy, etc.)",
-        "A patient was surgically treated and, within 30 days of being discharged, the patient had both a planned and an unplanned readmission to the same hospital.",
-        "It is unknown whether surgery of the primary site was recommended or performed. It is unknown whether the patient was readmitted to the samehospital within 30 days of discharge."
+        "None", #surgical procedure of the primary site was performed, or the patient was not readmitted to the same hospital within 30 days of discharge.
+        "Unplanned", # A patient was surgically treated and was readmitted to the same hospital within 30 days of being discharged. This readmission was unplanned.
+        "Planned", # A patient was surgically treated and was then readmitted to the same hospital within 30 days of-being discharged. This readmission was planned (chemotherapy port insertion, revision of colostomy, etc.)
+        "Planned + unplanned", # A patient was surgically treated and, within 30 days of being discharged, the patient had both a planned and an unplanned readmission to the same hospital
+        "Unknown" # Unknown whether surgery of the primary site was recommended or performed. It is unknown whether the patient was readmitted to the same hospital within 30 days of discharge
       )
     )
 
+  var_label(df$READM_HOSP_30_DAYS) <- "Readmissions within 30 days of surgical discharge"
 
-  var_label(df$READM_HOSP_30_DAYS) <- "Readmission within 30 days of surgical discharge"
-
-  ### REASON_FOR_NO_SURGERY - Reason for no surgery
+  #REASON_FOR_NO_SURGERY
   # Records the reason that no surgery was performed on the primary site.
   df$REASON_FOR_NO_SURGERY <-
     factor(
       df$REASON_FOR_NO_SURGERY,
       levels = c(0, 1, 2, 5, 6, 7, 8, 9),
       labels = c(
-        "Surgery of the primary site was performed.",
-        "Surgery of the primary site was not performed because it was not part of the planned first course treatment.",
-        "Surgery of the primary site was not recommended/performed because it was contraindicated due to patient risk factors (comorbid conditions, advanced age, etc.)",
-        "Surgery of the primary site was not performed because the patient died prior to planned or recommended surgery.",
-        "Surgery of the primary site was not performed; it was recommended by the patient=s physician, but was not performed as part of the first course of therapy. No reason was noted in patient record.",
-        "Surgery of the primary site was not performed; it was recommended by the patient=s physician, but this treatment was refused by the patient, the patient=s family member, or the patient=s guardian. The refusal was noted in patient record.",
-        "Surgery of the primary site was recommended, but it is unknown if it was performed. Further follow-up is recommended.",
-        "It is unknown whether surgery of the primary site was recommended or performed. Diagnosed at autopsy or death certificate only."
+        "Surgery performed", # surgery of the primary site was performed
+        "Not part of planned treatment", # Surgery of the primary site was not performed because it was not part of the planned first course treatment
+        "Risk factors", # Surgery of the primary site was not recommended/performed because it was contraindicated due to patient risk factors (comorbid conditions, advanced age, etc.)
+        "Patient died prior", # Surgery of the primary site was not performed because the patient died prior to planned or recommended surgery.
+        "Recommended, no reason provided", # Surgery of the primary site was not performed; it was recommended by the patient=s physician, but was not performed as part of the first course of therapy. No reason was noted in patient record.
+        "Recommended, refused by patient", # Surgery of the primary site was not performed; it was recommended by the patient=s physician, but this treatment was refused by the patient, the patient=s family member, or the patient=s guardian. The refusal was noted in patient record.
+        "Recommended, unknown if performed", # Surgery of the primary site was recommended, but it is unknown if it was performed. Further follow-up is recommended.
+        "Unknown if recommended or performed" # It is unknown whether surgery of the primary site was recommended or performed. Diagnosed at autopsy or death certificate only."
       )
     )
 
+  var_label(df$REASON_FOR_NO_SURGERY) <- "Reason for no surgery"
+
+
+  # Calculated field to determine if the patient had surgery
   df$ANY_SURGERY <- NA
-  df$ANY_SURGERY[df$REASON_FOR_NO_SURGERY %in% c("Surgery of the primary site was performed.")] <-
-    1
+  df$ANY_SURGERY[df$REASON_FOR_NO_SURGERY %in% c("Surgery performed")] <-
+    0
 
   df$ANY_SURGERY[df$REASON_FOR_NO_SURGERY %in% c(
-    "Surgery of the primary site was not performed because it was not part of the planned first course treatment.",
-    "Surgery of the primary site was not recommended/performed because it was contraindicated due to patient risk factors (comorbid conditions, advanced age, etc.)",
-    "Surgery of the primary site was not performed because the patient died prior to planned or recommended surgery.",
-    "Surgery of the primary site was not performed; it was recommended by the patient=s physician, but was not performed as part of the first course of therapy. No reason was noted in patient record.",
-    "Surgery of the primary site was not performed; it was recommended by the patient=s physician, but this treatment was refused by the patient, the patient=s family member, or the patient=s guardian. The refusal was noted in patient record.",
-    "Surgery of the primary site was recommended, but it is unknown if it was performed. Further follow-up is recommended."
-  )] <- 0
+    "Not part of planned treatment",
+    "Risk factors",
+    "Patient died prior",
+    "Recommended, no reason provided",
+    "Recommended, refused by patient",
+    "Recommended, unknown if performed",
+    "Unknown if recommended or performed"
+  )] <- 1
 
   df$ANY_SURGERY <-
-    factor(
-      df$ANY_SURGERY,
-      levels = c(0, 1),
-      labels = c("No Surgery",
-                 "Surgery")
-    )
+    factor(df$ANY_SURGERY,
+           levels = c(0, 1),
+           labels = c("Surgery",
+                      "No Surgery"))
 
+
+  # calculated variable to combine surgery and margins
   df$JOINT_SURG_MARGINS <- factor(
-    paste(df$ANY_SURGERY, df$MARGINS),
+    paste(df$ANY_SURGERY, df$MARGINS_RECODE),
     levels = c(
-      "NA Indeterminate/NA",
       "No Surgery Indeterminate/NA",
+      "Surgery Indeterminate/NA",
+      "Surgery NA",
       "Surgery Negative margin",
-      "Surgery Positive margin",
-      "Surgery Indeterminate/NA"
+      "Surgery Positive margin"
     )
   )
 
 
   df$SURGERY_MARGINS <- NA
-  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("NA Indeterminate/NA",
-                                                                  "No Surgery Indeterminate/NA")] <- 0
-  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Negative margin")] <-
-    1
-  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Positive margin")] <-
-    2
-  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Indeterminate/NA")] <-
-    3
+  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("No Surgery Indeterminate/NA")] <- 0
+  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Negative margin")] <- 1
+  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Positive margin")] <- 2
+  df$SURGERY_MARGINS[df$JOINT_SURG_MARGINS %in% c("Surgery Indeterminate/NA",
+                                                  "Surgery NA")] <- 3
 
 
   df$SURGERY_MARGINS <-
@@ -2189,17 +2205,15 @@ NCDBRecode <- function(df) {
       )
     )
 
-  df$SURGERY_MARGINS <- relevel(df$SURGERY_MARGINS, ref = "Surgery - Margins")
   var_label(df$SURGERY_MARGINS) <- "Margin Status"
 
-
-
-  ### DX_RAD_STARTED_DAYS - Radiation, Days from DX
+  #DX_RAD_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which radiation therapy was started (NAACCR Item #1210)
 
+  var_label(df$DX_RAD_STARTED_DAYS) <- "Radiation, Days from diagnosis"
 
-  ### RX_SUMM_RADIATION - Radiation Therapy
+  #RX_SUMM_RADIATION
   # Records the type of radiation administered to the primary site or any metastatic site
   # and includes all radiation therapy that is part of the first course of treatment,
   # whether delivered at the reporting institution or at other institutions.
@@ -2219,7 +2233,7 @@ NCDBRecode <- function(df) {
       )
     )
 
-  ### RAD_LOCATION_OF_RX - Location of Radiation Therapy
+  #RAD_LOCATION_OF_RX
   # Identifies the location where radiation therapy was administered during the first
   # course of treatment, as "at the reporting facility" or "elsewhere".
   df$RAD_LOCATION_OF_RX <-
@@ -2227,19 +2241,19 @@ NCDBRecode <- function(df) {
       df$RAD_LOCATION_OF_RX,
       levels = c(0, 1, 2, 3, 4, 8, 9),
       labels = c(
-        "None No radiation therapy was administered to the patient. Diagnosed at autopsy.",
-        "All radiation treatment at this facility All radiation therapy was administered at the reporting facility.",
-        "Regional treatment at this facility, boost elsewhere Regional treatment was administered at the reporting facility; a boost dose was administered elsewhere.",
-        "Boost radiation at this facility, regional elsewhere Regional treatment was administered elsewhere; a boost dose was administered at the reporting facility.",
-        "All radiation treatment elsewhere All radiation therapy was administered elsewhere.",
-        "Other Radiation therapy was administered, but the pattern does not fit the above categories.",
-        "Unknown Radiation therapy was administered, but the location of the treatment facility is unknown or not stated in patient record; it is unknown whether radiation therapy was administered. Death certificate only."
+        "None", # No radiation therapy was administered to the patient. Diagnosed at autopsy.",
+        "All radiation treatment at this facility", #All radiation therapy was administered at the reporting facility.",
+        "Regional treatment at this facility, boost elsewhere", # Regional treatment was administered at the reporting facility; a boost dose was administered elsewhere.",
+        "Boost radiation at this facility, regional elsewhere", # Regional treatment was administered elsewhere; a boost dose was administered at the reporting facility.",
+        "All radiation treatment elsewhere",
+        "Other pattern", # Radiation therapy was administered, but the pattern does not fit the above categories.",
+        "Unknown" # Radiation therapy was administered, but the location of the treatment facility is unknown or not stated in patient record; it is unknown whether radiation therapy was administered. Death certificate only."
       )
     )
 
   var_label(df$RAD_LOCATION_OF_RX) <- "Location of radiation therapy administration"
 
-  ### RAD_TREAT_VOL, Radiation Treatment Volume
+  #RAD_TREAT_VOL, Radiation Treatment Volume
   # Identifies the volume or anatomic target of the most clinically significant regional
   # radiation therapy delivered to the patient during the first course of treatment.
   df$RAD_TREAT_VOL <-
@@ -2294,59 +2308,58 @@ NCDBRecode <- function(df) {
         99
       ),
       labels = c(
-        "00-No radiation treatment Radiation therapy was not administered to the patient. Diagnosed at autopsy. ",
-        "01-Eye/orbit The radiation therapy target volume is limited to the eye and/or orbit.",
-        "02-Pituitary The target volume is restricted to the pituitary gland and all adjacent volumes are irradiated incidentally.",
-        "03-Brain (NOS) Treatment is directed at tumors lying within the substance of the brain, or its meninges.",
-        "04-Brain (limited) The treatment volume encompasses less than the total brain, or less than all of the meninges.",
-        "05-Head and neck (NOS) The treatment volume is directed at a primary tumor of the oropharyngeal complex, usually encompassing regional lymph nodes.",
-        "06-Head and neck (limited) Limited volume treatment of a head and neck primary with the exception of glottis (code 7), sinuses (code 8), or parotid (code 9).",
-        "07-Glottis Treatment is limited to a volume in the immediate neighborhood of the vocal cords.",
-        "08-Sinuses The primary target is one or both of the maxillary sinuses or the ethmoidal frontal sinuses. In some cases, the adjacent lymph node regions my be irradiated.",
-        "09-Parotid The primary target is one of the parotid glands. There may be secondary regional lymph node irradiation as well.",
-        "10-Chest/lung (NOS) Radiation therapy is directed to some combination of hilar, mediastinal, and/or supraclavicular lymph nodes, and/or peripheral lung structures.",
-        "11-Lung (limited) Radiation therapy is directed at one region of the lung without nodal  irradiation.",
-        "12-Esophagus The primary target is some portion of the esophagus. Regional lymph nodes may or may not be included in the treatment. Include tumors of the gastroesophageal junction.",
-        "13-Stomach The primary malignancy is in the stomach. Radiation is directed to the stomach and possibly adjacent lymph nodes.",
-        "14-Liver The primary target is all or a portion of the liver, for either primary or metastatic disease.",
-        "15-Pancreas The primary tumor is in the pancreas. The treatment field encompasses the pancreas and possibly adjacent lymph node regions.",
-        "16-Kidney The target is primary or metastatic disease in the kidney or the kidney bed after resection of a primary kidney tumor. Adjacent lymph node regions may be included in the field.",
-        "17-Abdomen (NOS) Include all treatment of abdominal contents that do not fit codes 12–16.",
-        "18-Breast The primary target is the intact breast and no attempt has been made to irradiate the regional lymph nodes. Intact breast includes breast tissue that either was not surgically treated or received a lumpectomy or partial mastectomy (C50.0–C50.9, Surgical Procedure of Primary Site [NAACCR Item #1290] codes 0–24).",
-        "19-Breast/lymph nodes A deliberate attempt has been made to include regional lymph nodes in the treatment of an intact breast. See definition of intact breast above.",
-        "20-Chest wall Treatment encompasses the chest wall (following mastectomy).",
-        "21-Chest wall/lymph nodes Treatment encompasses the chest wall (following mastectomy) plus fields directed at regional lymph nodes.",
-        "22-Mantle, Mini-mantle Treatment consists of a large radiation field designed to encompass all of the regional lymph nodes above the diaphragm, including cervical supraclavicular, axillary, mediastinal, and hilar nodes (mantle), or most of them (minimantle).This code is used exclusively for patients with Hodgkin’s or non-Hodgkin’s lymphoma.",
-        "23-Lower extended field The target zone includes lymph nodes below the diaphragm along the paraaortic chain. It may include extension to one side of the pelvis. This code includes the “hockey stick” field utilized to treat seminomas.",
-        "24-Spine The primary target relates to the bones of the spine, including the sacrum. Spinal cord malignancies should be coded 40 (Spinal cord).",
-        "25-Skull Treatment is directed at the bones of the skull. Any brain irradiation is a secondary consequence.",
-        "26-Ribs Treatment is directed toward metastatic disease in one or more ribs. Fields may be tangential or direct.",
-        "27-Hip The target includes the proximal femur for metastatic disease. In may cases there may beacetabular disease as well.",
-        "28-Pelvic bones The target includes structures of the bones of the pelvis other than the hip or sacrum.",
-        "29-Pelvis (NOS) Irradiation is directed at soft tissues within the pelvic region and codes 34–36 do not apply.",
-        "30-Skin The primary malignancy originates in the skin and the skin is the primary target. So-called skin metastases are usually subcutaneous and should be coded 31 (Soft tissue).",
-        "31-Soft tissue All treatment of primary or metastatic soft tissue malignancies not fitting other categories.",
-        "32-Hemibody A single treatment volume encompassing either all structures above the diaphragm, or all structures below the diaphragm. This is almost always administered for palliation of widespread bone metastasis in patients with prostate or breast cancer.",
-        "33-Whole body Entire body included in a single treatment.",
-        "34-Bladder and pelvis The primary malignancy originated in the bladder, all or most of the pelvis is treated as part of the plan, typically with a boost to the bladder.",
-        "35-Prostate and pelvis The primary malignancy originated in the prostate, all or most of the pelvis is treated as part of the plan, typically with a boost to the prostate.",
-        "36-Uterus and cervix Treatment is confined to the uterus and cervix or vaginal cuff, usually by intracavitary or interstitial technique. If entire pelvis is included in a portion of the treatment, then code 29 (Pelvis, NOS).",
-        "37-Shoulder Treatment is directed to the proxmal humerus, scapula, clavicle, or other components of the shoulder complex. This is usually administered for control of symptoms for metastases.",
-        "38-Extremity bone, NOS Bones of the arms or legs. This excludes the proximal femur, code 27 (Hip). This excludes the proximal humerus, code 37 (Shoulder).",
-        "39-Inverted Y Treatment has been given to a field that encompasses the paraaortic and bilateral inguinal or inguinofemoral lymph nodes in a single port.",
-        "40-Spinal cord Treatment is directed at the spinal cord or its meninges.",
-        "41-Prostate Treatment is directed at the prostate with or without the seminal vesicles, without regional lymph node treatment.",
-        "50-Thyroid Treatment is directed at the thyroid gland.",
-        "60-Lymph node region, NOS. The target is a group of lymph nodes not listed above. Examples include isolated treatment of a cervical, supraclavicular, or inguinofemoral region.",
-        "98-Other Radiation therapy administered, treatment volume other than those previously categorized.",
-        "99-Unknown Radiation therapy administered, treatment volume unknown or not stated in patient record; it is unknown whether radiation therapy was administered. Death certificate only"
+        "No radiation treatment", # Radiation therapy was not administered to the patient. Diagnosed at autopsy. ",
+        "Eye/orbit", # The radiation therapy target volume is limited to the eye and/or orbit.",
+        "Pituitary", # The target volume is restricted to the pituitary gland and all adjacent volumes are irradiated incidentally.",
+        "Brain (NOS)", # Treatment is directed at tumors lying within the substance of the brain, or its meninges.",
+        "Brain (limited)", # The treatment volume encompasses less than the total brain, or less than all of the meninges.",
+        "Head and neck (NOS)", # The treatment volume is directed at a primary tumor of the oropharyngeal complex, usually encompassing regional lymph nodes.",
+        "Head and neck (limited)", # Limited volume treatment of a head and neck primary with the exception of glottis (code 7), sinuses (code 8), or parotid (code 9).",
+        "Glottis", # Treatment is limited to a volume in the immediate neighborhood of the vocal cords.",
+        "Sinuses", # The primary target is one or both of the maxillary sinuses or the ethmoidal frontal sinuses. In some cases, the adjacent lymph node regions my be irradiated.",
+        "Parotid", # The primary target is one of the parotid glands. There may be secondary regional lymph node irradiation as well.",
+        "Chest/lung (NOS)", # Radiation therapy is directed to some combination of hilar, mediastinal, and/or supraclavicular lymph nodes, and/or peripheral lung structures.",
+        "Lung (limited)", # Radiation therapy is directed at one region of the lung without nodal  irradiation.",
+        "Esophagus", # The primary target is some portion of the esophagus. Regional lymph nodes may or may not be included in the treatment. Include tumors of the gastroesophageal junction.",
+        "Stomach", # The primary malignancy is in the stomach. Radiation is directed to the stomach and possibly adjacent lymph nodes.",
+        "Liver", # The primary target is all or a portion of the liver, for either primary or metastatic disease.",
+        "Pancreas", # The primary tumor is in the pancreas. The treatment field encompasses the pancreas and possibly adjacent lymph node regions.",
+        "Kidney", # The target is primary or metastatic disease in the kidney or the kidney bed after resection of a primary kidney tumor. Adjacent lymph node regions may be included in the field.",
+        "Abdomen (NOS)", # Include all treatment of abdominal contents that do not fit codes 12–16.",
+        "Breast", # The primary target is the intact breast and no attempt has been made to irradiate the regional lymph nodes. Intact breast includes breast tissue that either was not surgically treated or received a lumpectomy or partial mastectomy (C50.0–C50.9, Surgical Procedure of Primary Site [NAACCR Item #1290] codes 0–24).",
+        "Breast/lymph nodes", # A deliberate attempt has been made to include regional lymph nodes in the treatment of an intact breast. See definition of intact breast above.",
+        "Chest wall", # Treatment encompasses the chest wall (following mastectomy).",
+        "Chest wall/lymph nodes", # Treatment encompasses the chest wall (following mastectomy) plus fields directed at regional lymph nodes.",
+        "Mantle, Mini-mantle", # Treatment consists of a large radiation field designed to encompass all of the regional lymph nodes above the diaphragm, including cervical supraclavicular, axillary, mediastinal, and hilar nodes (mantle), or most of them (minimantle).This code is used exclusively for patients with Hodgkin’s or non-Hodgkin’s lymphoma.",
+        "Lower extended field", # The target zone includes lymph nodes below the diaphragm along the paraaortic chain. It may include extension to one side of the pelvis. This code includes the “hockey stick” field utilized to treat seminomas.",
+        "Spine", # The primary target relates to the bones of the spine, including the sacrum. Spinal cord malignancies should be coded 40 (Spinal cord).",
+        "Skull", # Treatment is directed at the bones of the skull. Any brain irradiation is a secondary consequence.",
+        "Ribs", # Treatment is directed toward metastatic disease in one or more ribs. Fields may be tangential or direct.",
+        "Hip", # The target includes the proximal femur for metastatic disease. In may cases there may beacetabular disease as well.",
+        "Pelvic bones", # The target includes structures of the bones of the pelvis other than the hip or sacrum.",
+        "Pelvis (NOS)", # Irradiation is directed at soft tissues within the pelvic region and codes 34–36 do not apply.",
+        "Skin", # The primary malignancy originates in the skin and the skin is the primary target. So-called skin metastases are usually subcutaneous and should be coded 31 (Soft tissue).",
+        "Soft tissue", # All treatment of primary or metastatic soft tissue malignancies not fitting other categories.",
+        "Hemibody", # A single treatment volume encompassing either all structures above the diaphragm, or all structures below the diaphragm. This is almost always administered for palliation of widespread bone metastasis in patients with prostate or breast cancer.",
+        "Whole body", # Entire body included in a single treatment.",
+        "Bladder and pelvis", # The primary malignancy originated in the bladder, all or most of the pelvis is treated as part of the plan, typically with a boost to the bladder.",
+        "Prostate and pelvis", # The primary malignancy originated in the prostate, all or most of the pelvis is treated as part of the plan, typically with a boost to the prostate.",
+        "Uterus and cervix", # Treatment is confined to the uterus and cervix or vaginal cuff, usually by intracavitary or interstitial technique. If entire pelvis is included in a portion of the treatment, then code 29 (Pelvis, NOS).",
+        "Shoulder", # Treatment is directed to the proxmal humerus, scapula, clavicle, or other components of the shoulder complex. This is usually administered for control of symptoms for metastases.",
+        "Extremity bone, NOS", #Bones of the arms or legs. This excludes the proximal femur, code 27 (Hip). This excludes the proximal humerus, code 37 (Shoulder).",
+        "Inverted Y", # Treatment has been given to a field that encompasses the paraaortic and bilateral inguinal or inguinofemoral lymph nodes in a single port.",
+        "Spinal cord", # Treatment is directed at the spinal cord or its meninges.",
+        "Prostate", # Treatment is directed at the prostate with or without the seminal vesicles, without regional lymph node treatment.",
+        "Thyroid", # Treatment is directed at the thyroid gland.",
+        "Lymph node region, NOS", # The target is a group of lymph nodes not listed above. Examples include isolated treatment of a cervical, supraclavicular, or inguinofemoral region.",
+        "Other", # Radiation therapy administered, treatment volume other than those previously categorized.",
+        "Unknown" # Radiation therapy administered, treatment volume unknown or not stated in patient record; it is unknown whether radiation therapy was administered. Death certificate only"
       )
     )
 
   var_label(df$RAD_TREAT_VOL) <- "Radiation treatment volume/location"
 
-
-  ### RAD_REGIONAL_RX_MODALITY - Regional Treatment Modality
+  #RAD_REGIONAL_RX_MODALITY
   # Records the dominant modality of radiation therapy used to deliver the most
   # clinically significant regional dose to the primary volume of interest during the
   # first course of treatment.
@@ -2394,48 +2407,50 @@ NCDBRecode <- function(df) {
         99
       ),
       labels = c(
-        "00-No radiation treatment Radiation therapy was not administered to the patient. Diagnosed at autopsy.",
-        "20-External beam, NOS The treatment is known to be by external beam, but there is insufficient information to determine the specific modality.",
-        "21-Orthovoltage External beam therapy administered using equipment with a maximum energy of less than one (1) million volts (MV). Orthovoltage,energies are typically expressed in units of kilovolts (kV).",
-        "22-Cobalt-60, Cesium-137 External beam therapy using a machine containing either a Cobalt-60 or Cesium-137 source. Intracavitary use of these sources is coded either 50 or 51.",
-        "23-Photons (2–5 MV) External beam therapy using a photon producing machine with beam energy in the range of 2–5 MV.",
-        "24-Photons (6–10 MV) External beam therapy using a photon producing machine with beam energy in the range of 6–10 MV.",
-        "25-Photons (11–19 MV) External beam therapy using a photon producing machine with beam energy in the range of 11–19 MV.",
-        "26-Photons (>19 MV) External beam therapy using a photon producing machine with beam energy of more than 19 MV.",
-        "27-Photons (mixed energies) External beam therapy using more than one energy over the course of treatment.",
-        "28-Electrons Treatment delivered by electron beam. ",
-        "29-Photons and electrons mixed Treatment delivered using a combination of photon and electron beams.",
-        "30-Neutrons, with or withoutphotons/electrons Treatment delivered using neutron beam.",
-        "31-IMRT Intensity modulated radiation therapy, an external beam technique that should be clearly stated in patient record.",
-        "32-Conformal or 3-D therapy An external beam technique using multiple, fixed portals shaped to conform to a defined target volume. Should be clearly described as conformal or 3D therapy in patient record.",
-        "40-Protons Treatment delivered using proton therapy.",
-        "41-Stereotactic radiosurgery, NOS. Treatment delivered using stereotactic radiosurgery, type not specified in patient record.",
-        "42-Linac radiosurgery Treatment categorized as using stereotactic technique delivered with a linear accelerator.",
-        "43-Gamma Knife Treatment categorized as using stereotactic technique delivered using a Gamma Knife machine.",
-        "50-Brachytherapy, NOS Brachytherapy, interstitial implants, molds, seeds, needles, or intracavitary applicators of radioactive materials not otherwise specified.",
-        "51-Brachytherapy, Intracavitary, LDR, Intracavitary (no direct insertion into tissues), radioisotope treatment using low dose rate applicators and isotopes (Cesium-137, Fletcher applicator).",
-        "52-Brachytherapy, Intracavitary, HDR, Intracavitary (no direct insertion into tissues), radioisotope treatment using high dose rate, afterloading applicators and isotopes.",
-        "53-Brachytherapy, Interstitial, LDR, Interstitial (direct insertion into tissues), radioisotope treatment using low dose rate sources.",
-        "54-Brachytherapy, Interstitial, HDR, Interstitial (direct insertion into tissues), radioisotope treatment using high dose rate sources.",
-        "55-Radium Infrequently used for low dose rate (LDR) interstitial and intracavitary therapy.",
-        "60-Radioisotopes, NOS Iodine-131, Phosphorus-32, etc.",
-        "61-Strontium-89 Treatment primarily by intravenous routes for bone metastases.",
-        "62-Strontium-90",
-        "80-Combination modality, specified Combination of external beam radiation and either radioactive implants or radioisotopes*",
-        "85-Combination modality, NOS, Combination of radiation treatment modalities",
-        "98-Other, NOS Radiation therapy administered, but the treatment modality is not specified or is unknown.",
-        "99-Unknown Radiation therapy administered, treatment volume unknown or not stated in the patient record; it is unknown whether radiation therapy was administered. Death certificate only."
+        "No radiation treatment", # Radiation therapy was not administered to the patient. Diagnosed at autopsy.",
+        "External beam, NOS", # The treatment is known to be by external beam, but there is insufficient information to determine the specific modality.",
+        "Orthovoltage", # External beam therapy administered using equipment with a maximum energy of less than one (1) million volts (MV). Orthovoltage,energies are typically expressed in units of kilovolts (k",
+        "Cobalt-60, Cesium-137", # External beam therapy using a machine containing either a Cobalt-60 or Cesium-137 source. Intracavitary use of these sources is coded either 50 or 51.",
+        "Photons (2–5 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 2–5 MV.",
+        "Photons (6–10 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 6–10 MV.",
+        "Photons (11–19 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 11–19 MV.",
+        "Photons (>19 MV)", # External beam therapy using a photon producing machine with beam energy of more than 19 MV.",
+        "Photons (mixed energies)", # External beam therapy using more than one energy over the course of treatment.",
+        "Electrons", # Treatment delivered by electron beam. ",
+        "Photons and electrons mixed", # Treatment delivered using a combination of photon and electron beams.",
+        "Neutrons, with or withoutphotons/electrons", # Treatment delivered using neutron beam.",
+        "IMRT", # Intensity modulated radiation therapy, an external beam technique that should be clearly stated in patient record.",
+        "Conformal or 3-D therapy", # An external beam technique using multiple, fixed portals shaped to conform to a defined target volume. Should be clearly described as conformal or 3D therapy in patient rrd.",
+        "Protons", # Treatment delivered using proton therapy.",
+        "Stereotactic radiosurgery, NOS", # Treatment delivered using stereotactic radiosurgery, type not specified in patient record.",
+        "Linac radiosurgery", # Treatment categorized as using stereotactic technique delivered with a linear accelerator.",
+        "Gamma Knife", # Treatment categorized as using stereotactic technique delivered using a Gamma Knife machine.",
+        "Brachytherapy, NOS", # Brachytherapy, interstitial implants, molds, seeds, needles, or intracavitary applicators of radioactive materials not otherwise specified.",
+        "Brachytherapy, Intracavitary, LDR, Intracavitary", # (no direct insertion into tissues), radioisotope treatment using low dose rate applicators and isotopes (Cesium-137, Fletcher applicator).",
+        "Brachytherapy, Intracavitary, HDR, Intracavitary", # (no direct insertion into tissues), radioisotope treatment using high dose rate, afterloading applicators and isotopes.",
+        "Brachytherapy, Interstitial, LDR, Interstitial", # (direct insertion into tissues), radioisotope treatment using low dose rate sources.",
+        "Brachytherapy, Interstitial, HDR, Interstitial", # (direct insertion into tissues), radioisotope treatment using high dose rate sources.",
+        "Radium", # Infrequently used for low dose rate (LDR) interstitial and intracavitary therapy.",
+        "Radioisotopes, NOS", # Iodine-131, Phosphorus-32, etc.",
+        "Strontium-89", # Treatment primarily by intravenous routes for bone metastases.",
+        "Strontium-90",
+        "Combination modality", # specified Combination of external beam radiation and either radioactive implants or radioisotopes*",
+        "Combination modality, NOS", #, Combination of radiation treatment modalities",
+        "Other, NOS", # Radiation therapy administered, but the treatment modality is not specified or is unknown.",
+        "Unknown Radiation therapy administered" #, treatment volume unknown or not stated in the patient record; it is unknown whether radiation therapy was administered. Death certificate only."
       )
     )
 
   var_label(df$RAD_REGIONAL_RX_MODALITY) <- "Regional radiation treatment modality"
 
-  ### RAD_REGIONAL_DOSE_CGY - Regional Dose
+  #RAD_REGIONAL_DOSE_CGY
   # Records the dominant or most clinically significant total dose of regional radiation
   # therapy delivered to the patient during the first course of treatment. The unit of
   # measure is centiGray (cGy).
 
-  ### RAD_BOOST_RX_MODALITY - Boost Treatment Modality
+  var_label(df$RAD_REGIONAL_DOSE_CGY) <- "Regional Dose (cGy)"
+
+  #RAD_BOOST_RX_MODALITY
   # Records the dominant modality of radiation therapy used to deliver the most
   # clinically significant boost dose to the primary volume of interest during the first
   # course of treatment. This is accomplished with external beam fields of reduced
@@ -2481,51 +2496,55 @@ NCDBRecode <- function(df) {
         99
       ),
       labels = c(
-        "00-No radiation treatment Radiation therapy was not administered to the patient. Diagnosed at autopsy.",
-        "20-External beam, NOS The treatment is known to be by external beam, but there is insufficient information to determine the specific modality.",
-        "21-Orthovoltage External beam therapy administered using equipment with a maximum energy of less than one (1) million volts (MV). Orthovoltage,energies are typically expressed in units of kilovolts (kV).",
-        "22-Cobalt-60, Cesium-137 External beam therapy using a machine containing either a Cobalt-60 or Cesium-137 source. Intracavitary use of these sources is coded either 50 or 51.",
-        "23-Photons (2–5 MV) External beam therapy using a photon producing machine with beam energy in the range of 2–5 MV.",
-        "24-Photons (6–10 MV) External beam therapy using a photon producing machine with beam energy in the range of 6–10 MV.",
-        "25-Photons (11–19 MV) External beam therapy using a photon producing machine with beam energy in the range of 11–19 MV.",
-        "26-Photons (>19 MV) External beam therapy using a photon producing machine with beam energy of more than 19 MV.",
-        "27-Photons (mixed energies) External beam therapy using more than one energy over the course of treatment.",
-        "28-Electrons Treatment delivered by electron beam. ",
-        "29-Photons and electrons mixed Treatment delivered using a combination of photon and electron beams.",
-        "30-Neutrons, with or withoutphotons/electrons Treatment delivered using neutron beam.",
-        "31-IMRT Intensity modulated radiation therapy, an external beam technique that should be clearly stated in patient record.",
-        "32-Conformal or 3-D therapy An external beam technique using multiple, fixed portals shaped to conform to a defined target volume. Should be clearly described as conformal or 3D therapy in patient record.",
-        "40-Protons Treatment delivered using proton therapy.",
-        "41-Stereotactic radiosurgery, NOS. Treatment delivered using stereotactic radiosurgery, type not specified in patient record.",
-        "42-Linac radiosurgery Treatment categorized as using stereotactic technique delivered with a linear accelerator.",
-        "43-Gamma Knife Treatment categorized as using stereotactic technique delivered using a Gamma Knife machine.",
-        "50-Brachytherapy, NOS Brachytherapy, interstitial implants, molds, seeds, needles, or intracavitary applicators of radioactive materials not otherwise specified.",
-        "51-Brachytherapy, Intracavitary, LDR, Intracavitary (no direct insertion into tissues), radioisotope treatment using low dose rate applicators and isotopes (Cesium-137, Fletcher applicator).",
-        "52-Brachytherapy, Intracavitary, HDR, Intracavitary (no direct insertion into tissues), radioisotope treatment using high dose rate, afterloading applicators and isotopes.",
-        "53-Brachytherapy, Interstitial, LDR, Interstitial (direct insertion into tissues), radioisotope treatment using low dose rate sources.",
-        "54-Brachytherapy, Interstitial, HDR, Interstitial (direct insertion into tissues), radioisotope treatment using high dose rate sources.",
-        "55-Radium Infrequently used for low dose rate (LDR) interstitial and intracavitary therapy.",
-        "60-Radioisotopes, NOS Iodine-131, Phosphorus-32, etc.",
-        "61-Strontium-89 Treatment primarily by intravenous routes for bone metastases.",
-        "62-Strontium-90",
-        "80-Combination modality, specified* Combination of external beam radiation and either radioactive implants or radioisotopes*",
-        "85-Combination modality, NOS*, Combination of radiation treatment modalities",
-        "98-Other, NOS Radiation therapy administered, but the treatment modality is not specified or is unknown.",
-        "99-Unknown Radiation therapy administered, treatment volume unknown or not stated in the patient record; it is unknown whether radiation therapy was administered. Death certificate only."
+        "No radiation treatment", # Radiation therapy was not administered to the patient. Diagnosed at autopsy.",
+        "External beam, NOS", # The treatment is known to be by external beam, but there is insufficient information to determine the specific modality.",
+        "Orthovoltage", # External beam therapy administered using equipment with a maximum energy of less than one (1) million volts (MV). Orthovoltage,energies are typically expressed in units of kilovolts (k",
+        "Cobalt-60, Cesium-137", # External beam therapy using a machine containing either a Cobalt-60 or Cesium-137 source. Intracavitary use of these sources is coded either 50 or 51.",
+        "Photons (2–5 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 2–5 MV.",
+        "Photons (6–10 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 6–10 MV.",
+        "Photons (11–19 MV)", # External beam therapy using a photon producing machine with beam energy in the range of 11–19 MV.",
+        "Photons (>19 MV)", # External beam therapy using a photon producing machine with beam energy of more than 19 MV.",
+        "Photons (mixed energies)", # External beam therapy using more than one energy over the course of treatment.",
+        "Electrons", # Treatment delivered by electron beam. ",
+        "Photons and electrons mixed", # Treatment delivered using a combination of photon and electron beams.",
+        "Neutrons, with or withoutphotons/electrons", # Treatment delivered using neutron beam.",
+        "IMRT", # Intensity modulated radiation therapy, an external beam technique that should be clearly stated in patient record.",
+        "Conformal or 3-D therapy", # An external beam technique using multiple, fixed portals shaped to conform to a defined target volume. Should be clearly described as conformal or 3D therapy in patient rrd.",
+        "Protons", # Treatment delivered using proton therapy.",
+        "Stereotactic radiosurgery, NOS", # Treatment delivered using stereotactic radiosurgery, type not specified in patient record.",
+        "Linac radiosurgery", # Treatment categorized as using stereotactic technique delivered with a linear accelerator.",
+        "Gamma Knife", # Treatment categorized as using stereotactic technique delivered using a Gamma Knife machine.",
+        "Brachytherapy, NOS", # Brachytherapy, interstitial implants, molds, seeds, needles, or intracavitary applicators of radioactive materials not otherwise specified.",
+        "Brachytherapy, Intracavitary, LDR, Intracavitary", # (no direct insertion into tissues), radioisotope treatment using low dose rate applicators and isotopes (Cesium-137, Fletcher applicator).",
+        "Brachytherapy, Intracavitary, HDR, Intracavitary", # (no direct insertion into tissues), radioisotope treatment using high dose rate, afterloading applicators and isotopes.",
+        "Brachytherapy, Interstitial, LDR, Interstitial", # (direct insertion into tissues), radioisotope treatment using low dose rate sources.",
+        "Brachytherapy, Interstitial, HDR, Interstitial", # (direct insertion into tissues), radioisotope treatment using high dose rate sources.",
+        "Radium", # Infrequently used for low dose rate (LDR) interstitial and intracavitary therapy.",
+        "Radioisotopes, NOS", # Iodine-131, Phosphorus-32, etc.",
+        "Strontium-89", # Treatment primarily by intravenous routes for bone metastases.",
+        "Strontium-90",
+        "Combination modality", # specified Combination of external beam radiation and either radioactive implants or radioisotopes*",
+        "Combination modality, NOS", #, Combination of radiation treatment modalities",
+        "Other, NOS", # Radiation therapy administered, but the treatment modality is not specified or is unknown.",
+        "Unknown Radiation therapy administered" #, treatment volume unknown or not stated in the patient record; it is unknown whether radiation therapy was administered. Death certificate only."
       )
     )
   var_label(df$RAD_BOOST_RX_MODALITY) <- "Radiation boost treatment modality"
 
-  ### RAD_BOOST_DOSE_CGY - Boost Dose
+  #RAD_BOOST_DOSE_CGY - Boost Dose
   # Records the additional dose delivered to that part of the treatment volume
   # encompassed by the boost fields or devices. The unit of measure is centiGray
   # (cGy).
 
-  ### RAD_NUM_TREAT_VOL - Number of Treatment to this Volume
+  var_label(df$RAD_BOOST_RX_MODALITY) <- "Radiation boost treatment dose (cGy)"
+
+  #RAD_NUM_TREAT_VOL
   # Records the total number of treatment sessions (fractions) administered during the
   # first course of treatment.
 
-  ### RX_SUMM_SURGRAD_SEQ - Radiation Surgery Sequence
+  var_label(df$RAD_NUM_TREAT_VOL) <- "Number of radiation treatments to this Volume"
+
+  #RX_SUMM_SURGRAD_SEQ
   # Records the sequencing of radiation and surgical procedures given as part of the
   # first course of treatment.
 
@@ -2547,7 +2566,7 @@ NCDBRecode <- function(df) {
   var_label(df$RX_SUMM_SURGRAD_SEQ) <- "Sequence of radiation and surgery"
 
 
-  ### RAD_ELAPSED_RX_DAYS - Radiation ended, days from start of radiation
+  #RAD_ELAPSED_RX_DAYS
   # For diagnosis years prior to 2003, this item uses a single ROADS item containing
   # the number of elapsed days between the start and end of radiation. For diagnosis
   # years 2003 and later, this item is calculated as the number of days between the
@@ -2557,7 +2576,9 @@ NCDBRecode <- function(df) {
   # elapsed, if radiation ends the day after it is started, then 2 days have elapsed, and
   # so on.
 
-  ### REASON_FOR_NO_RADIATION - Reason for no radiation
+  var_label(df$RAD_ELAPSED_RX_DAYS) <- "Radiation ended, days from start of radiation"
+
+  #REASON_FOR_NO_RADIATION
   # Records the reason that no regional radiation therapy was administered to the
   # patient.
 
@@ -2566,31 +2587,31 @@ NCDBRecode <- function(df) {
       df$REASON_FOR_NO_RADIATION,
       levels = c(0, 1, 2, 5, 6, 7, 8, 9),
       labels = c(
-        "Radiation therapy was administered.",
-        "Radiation therapy was not administered because it was not part of the planned first course treatment.",
-        "Radiation therapy was not recommended/administered because it was contraindicated due to other patient risk factors (comorbid conditions, advanced age, etc.).",
-        "Radiation therapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Radiation therapy was not administered; it was recommended by the patient’s physician, but was not administered as part of first course treatment. No reason was noted in patient record.",
-        "Radiation therapy was not administered; it was recommended by the patient’s physician, but this treatment was refused by the patient, the patient’s family member, or the patient’s guardian. The refusal was noted in patient record.",
-        "Radiation therapy was recommended, but it is unknown whether it was administered.",
-        "It is unknown if radiation therapy was recommended or administered. Death certificate and autopsy cases only."
+        "Administered",
+        "Not planned", #Radiation therapy was not administered because it was not part of the planned first course treatment.",
+        "Risk factors", #Radiation therapy was not recommended/administered because it was contraindicated due to other patient risk factors (comorbid conditions, advanced age, etc.).",
+        "Recommended, deceased", #Radiation therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason", #Radiation therapy was not administered; it was recommended by the patient’s physician, but was not administered as part of first course treatment. No reason was noted in patient record.",
+        "Recommended, refused", #Radiation therapy was not administered; it was recommended by the patient’s physician, but this treatment was refused by the patient, the patient’s family member, or the patient’s guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #Radiation therapy was recommended, but it is unknown whether it was administered.",
+        "Unknown" #It is unknown if radiation therapy was recommended or administered. Death certificate and autopsy cases only."
       )
     )
 
   var_label(df$REASON_FOR_NO_RADIATION) <- "Reason for no radiation"
 
-  df$ANY_RADIATION <- NA
-  df$ANY_RADIATION[df$REASON_FOR_NO_RADIATION %in% c("Radiation therapy was administered.")] <-
-    1
 
+  #Calculated column ANY_RADIATION
+  df$ANY_RADIATION <- NA
+  df$ANY_RADIATION[df$REASON_FOR_NO_RADIATION %in% c("Administered")] <- 1
   df$ANY_RADIATION[df$REASON_FOR_NO_RADIATION %in% c(
-    "Radiation therapy was not administered because it was not part of the planned first course treatment.",
-    "Radiation therapy was not recommended/administered because it was contraindicated due to other patient risk factors (comorbid conditions, advanced age, etc.).",
-    "Radiation therapy was not administered because the patient died prior to planned or recommended therapy.",
-    "Radiation therapy was not administered; it was recommended by the patient’s physician, but was not administered as part of first course treatment. No reason was noted in patient record.",
-    "Radiation therapy was not administered; it was recommended by the patient’s physician, but this treatment was refused by the patient, the patient’s family member, or the patient’s guardian. The refusal was noted in patient record.",
-    "Radiation therapy was recommended, but it is unknown whether it was administered."
-  )] <- 0
+    "Not planned",
+    "Risk factors",
+    "Recommended, deceased",
+    "Recommended, no reason",
+    "Recommended, refused",
+    "Recommended, unknown if administered",
+    "Unknown")] <- 0
 
   df$ANY_RADIATION <-
     factor(
@@ -2602,14 +2623,15 @@ NCDBRecode <- function(df) {
 
   var_label(df$ANY_RADIATION) <- "Radiation"
 
-
-  ### DX_SYSTEMIC_STARTED_DAYS - Systemic, days from dx
+  #DX_SYSTEMIC_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which any systemic therapy [chemotherapy, hormone therapy,
   # immunotherapy, or hematologic transplant and endocrine procedures] was started
   # (NAACCR Item #3230).
 
-  ### RX_SUMM_CHEMO - Chemotherapy
+  var_label(df$DX_SYSTEMIC_STARTED_DAYS) <- "Systemic, days from diagnosis"
+
+  #RX_SUMM_CHEMO
   # Records the type of chemotherapy administered as first course treatment at any
   # facility. If chemotherapy was not administered, then this item records the reason it
   # was not administered to the patient. Chemotherapy consists of a group of
@@ -2621,35 +2643,36 @@ NCDBRecode <- function(df) {
       df$RX_SUMM_CHEMO,
       levels = c(00, 01, 02, 03, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, chemotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Single-agent chemotherapy administered as first course therapy.",
-        "Multiagent chemotherapy administered as first course therapy.",
-        "Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Chemotherapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
+        "Not planned", # chemotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, unknown details", #Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Single-agent chemotherapy", # administered as first course therapy.",
+        "Multiagent chemotherapy", # administered as first course therapy.",
+        "Risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #Chemotherapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
+  var_label(df$RX_SUMM_CHEMO) <- "Chemotherapy"
+
+  #calculated column to make chemotherapy admin binary
   df$ANY_CHEMO <- NA
   df$ANY_CHEMO[df$RX_SUMM_CHEMO %in% c(
-    "Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-    "Single-agent chemotherapy administered as first course therapy.",
-    "Multiagent chemotherapy administered as first course therapy."
-  )] <- 1
+    "Administered, unknown details",
+    "Single-agent chemotherapy",
+    "Multiagent chemotherapy")] <- 1
 
   df$ANY_CHEMO[df$RX_SUMM_CHEMO %in% c(
-    "None, chemotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-    "Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-    "Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
-    "Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-    "Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-    "Chemotherapy was recommended, but it is unknown if it was administered."
-  )] <- 0
-
+    "Not planned",
+    "Risk factors",
+    "Patient deceased",
+    "Recommended, no reason given",
+    "Recommended, refused",
+    "Recommended, unknown if administered",
+    "Unknown")] <- 0
 
   df$ANY_CHEMO <-
     factor(
@@ -2660,8 +2683,7 @@ NCDBRecode <- function(df) {
     )
   var_label(df$ANY_CHEMO) <- "Chemotherapy"
 
-
-  ### RX_HOSP_CHEMO - Chemotherapy at this facility
+  #RX_HOSP_CHEMO
   # Records the type of chemotherapy administered as first course treatment by the
   # facility that submitted this record. If chemotherapy was not administered, then this
   # item records the reason it was not administered to the patient.
@@ -2671,25 +2693,28 @@ NCDBRecode <- function(df) {
       df$RX_HOSP_CHEMO,
       levels = c(00, 01, 02, 03, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, chemotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
-        "Single-agent chemotherapy administered as first course therapy.",
-        "Multiagent chemotherapy administered as first course therapy.",
-        "Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Chemotherapy was not administered. It was recemmended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Chemotherapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only."
+        "Not planned", # chemotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, unknown details", #Chemotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Single-agent chemotherapy", # administered as first course therapy.",
+        "Multiagent chemotherapy", # administered as first course therapy.",
+        "Risk factors", #Chemotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #Chemotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #Chemotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #Chemotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #Chemotherapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
-  ### DX_CHEMO_STARTED_DAYS - Chemotherapy, Days from dx
+  val_label(df$RX_HOSP_CHEMO) <- "Chemotherapy at this facility"
+
+  #DX_CHEMO_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which chemotherapy at any facility was started (NAACCR Item #1220).
 
+  val_label(df$DX_CHEMO_STARTED_DAYS) <- "Chemotherapy, days from diagnosis"
 
-  ### RX_SUMM_HORMONE - Hormone Therapy
+  #RX_SUMM_HORMONE
   # Records the type of hormone therapy administered as first course treatment at any
   # facility. If hormone therapy was not administered, then this item records the reason
   # it was not administered to the patient. Hormone therapy consists of a group of
@@ -2700,27 +2725,31 @@ NCDBRecode <- function(df) {
       df$RX_SUMM_HORMONE,
       levels = c(00, 01, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, hormone therapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Hormone therapy administered as first course therapy.",
-        "Hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Hormone therapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a hormonal agent(s) was recommended or administered because it is not stated in patient record. Death certificate only."
+        "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, first course", #hormone therapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #hormone therapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
-  df$ANY_HORMONE <- NA
-  df$ANY_HORMONE[df$RX_SUMM_HORMONE %in% c("Hormone therapy administered as first course therapy.")] <-
-    1
+  # TODO no clue why this isn't
+  val_label(df$RX_SUMM_HORMONE) <- "Hormone therapy"
 
+  #calculated column to simplify hormone treatment to a binary
+  df$ANY_HORMONE <- NA
+  df$ANY_HORMONE[df$RX_SUMM_HORMONE %in% c("Administered, first course")] <-1
   df$ANY_HORMONE[df$RX_SUMM_HORMONE %in% c(
-    "None, hormone therapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-    "Hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-    "Hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
-    "Hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-    "Hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record."
+    "Not planned",
+    "Risk factors",
+    "Patient deceased",
+    "Recommended, no reason given",
+    "Recommended, refused",
+    "Recommended, unknown if administered",
+    "Unknown"
   )] <- 0
 
 
@@ -2734,8 +2763,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$ANY_HORMONE) <- "Hormone Therapy"
 
-
-  ### RX_HOSP_HORMONE - Hormone Therapy at this Facility
+  #RX_HOSP_HORMONE
   # This item records the type of hormone therapy administered as first course
   # treatment by the facility that submitted this record. If hormone therapy was not
   # administered, then this item records the reason it was not administered to the
@@ -2746,22 +2774,26 @@ NCDBRecode <- function(df) {
       df$RX_HOSP_HORMONE,
       levels = c(0, 1, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, hormone therapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Hormone therapy administered as first course therapy.",
-        "Hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Hormone therapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a hormonal agent(s) was recommended or administered because it is not stated in patient record. Death certificate only."
+        "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, first course", #hormone therapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Risk factors", #hormone therapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #hormone therapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #hormone therapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #hormone therapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #hormone therapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
-  ### DX_HORMONE_STARTED_DAYS - Hormone Therapy, Days from Dx
+  var_label(df$RX_HOSP_HORMONE) <- "Hormone Therapy at this Facility"
+
+  #DX_HORMONE_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which hormone therapy at any facility was started (NAACCR Item #1230).
 
-  ### RX_SUMM_IMMUNOTHERAPY - Immunotherapy
+  var_label(df$DX_HORMONE_STARTED_DAYS) <- "Hormone Therapy, Days from dx"
+
+  #RX_SUMM_IMMUNOTHERAPY
   # Records the type of immunotherapy administered as first course treatment at this
   # and all other facilities. If immunotherapy was not administered, then this item
   # records the reason it was not administered to the patient. Immunotherapy consists
@@ -2773,27 +2805,28 @@ NCDBRecode <- function(df) {
       as.numeric(df$RX_SUMM_IMMUNOTHERAPY),
       levels = c(0, 1, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, immunotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Immunotherapy administered as first course therapy.",
-        "Immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Immunotherapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a immunotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only."
+        "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, first course", #immunotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #immunotherapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
+  #calculated column to simplify immunotherapy to a binary
   df$ANY_IMMUNO <- NA
-  df$ANY_IMMUNO[df$RX_SUMM_IMMUNOTHERAPY %in% c("Immunotherapy administered as first course therapy.")] <-
-    1
-
+  df$ANY_IMMUNO[df$RX_SUMM_IMMUNOTHERAPY %in% c("Administered, first course")] <- 1
   df$ANY_IMMUNO[df$RX_SUMM_IMMUNOTHERAPY %in% c(
-    "None, immunotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-    "Immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-    "Immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
-    "Immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-    "Immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record."
+    "Not planned",
+    "Risk factors",
+    "Patient deceased",
+    "Recommended, no reason given",
+    "Recommended, refused",
+    "Recommended, unknown if administered",
+    "Unknown"
   )] <- 0
 
 
@@ -2808,8 +2841,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$ANY_IMMUNO) <- "Immunotherapy"
 
-
-  ### RX_HOSP_IMMUNOTHERAPY - Immunotherapy at this Facility
+  #RX_HOSP_IMMUNOTHERAPY
   # Records the type of immunotherapy administered as first course treatment at the
   # facility that submitted the record. If immunotherapy was not administered, then this
   # item records the reason it was not administered to the patient.
@@ -2819,20 +2851,24 @@ NCDBRecode <- function(df) {
       df$RX_HOSP_IMMUNOTHERAPY,
       levels = c(0, 1, 82, 85, 86, 87, 88, 99),
       labels = c(
-        "None, immunotherapy was not part of the planned first course of therapy. Diagnosed at autopsy.",
-        "Immunotherapy administered as first course therapy.",
-        "Immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
-        "Immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
-        "Immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
-        "Immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
-        "Immunotherapy was recommended, but it is unknown if it was administered.",
-        "It is unknown whether a immunotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only."
+        "Not planned", #  was not part of the planned first course of therapy. Diagnosed at autopsy.",
+        "Administered, first course", #immunotherapy administered as first course therapy, but the type and number of agents is not documented in patient record.",
+        "Risk factors", #immunotherapy was not recommended/administered because it was contraindicated due to patient risk factors (ie, comorbid conditions, advanced age).",
+        "Patient deceased", #immunotherapy was not administered because the patient died prior to planned or recommended therapy.",
+        "Recommended, no reason given", #immunotherapy was not administered. It was recommended by the patient's physician, but was not administered as part of the first course of therapy. No reason was stated in patient record.",
+        "Recommended, refused", #immunotherapy was not administered. It was recommended by the patient's physician, but this treatment was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in patient record.",
+        "Recommended, unknown if administered", #immunotherapy was recommended, but it is unknown if it was administered.",
+        "Unknown" #It is unknown whether a chemotherapeutic agent(s) was recommended or administered because it is not stated in patient record. Death certificate only"
       )
     )
 
-  ### DX_IMMUNO_STARTED_DAYS - Immunotherapy, days from dx
+  var_label(df$RX_HOSP_IMMUNOTHERAPY) <- "Immunotherapy at this Facility"
+
+  #DX_IMMUNO_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which immunotherapy at any facility was started (NAACCR Item #1240).
+
+  var_label(df$DX_IMMUNO_STARTED_DAYS) <- "Immunotherapy, days from diagnosis"
 
   ### RX_SUMM_TRNSPLNT_ENDO, Hematologic Transplant and endocrine procedures
   # identifies systemic therapeutic procedures performed as part of the first course of
