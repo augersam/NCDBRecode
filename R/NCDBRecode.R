@@ -1357,10 +1357,10 @@ NCDBRecode <- function(df) {
                  "cIs or similar")
     )
 
-  var_label(df$pT_RECODE) <- "Pathological T"
+  var_label(df$pT_RECODE) <- "Pathologic T"
 
 
-  ### TNM_PATH_N - AJCC Pathologic N
+  #TNM_PATH_N - AJCC Pathologic N
   # Identifies the pathologically-determined absence or presence or extent of regional
   # lymph node (pN) metastasis as defined by the American Joint Committee on
   # Cancer (AJCC)
@@ -1369,76 +1369,133 @@ NCDBRecode <- function(df) {
     factor(
       df$TNM_PATH_N,
       levels = c(
-        "X",
-        "0",
-        "0I",
-        "0M",
-        "1MI",
-        "0A",
-        "0B",
-        "1",
-        "1A",
-        "1B",
-        "1C",
-        "2",
-        "2A",
-        "2B",
-        "2C",
-        "3",
-        "3A",
-        "3B",
-        "3C",
-        "4",
+        "pX",
+        "p0",
+        "p0I-",
+        "p0I+",
+        "p0M-",
+        "p0M+",
+        "p1MI",
+        "p0A",
+        "p0B",
+        "p1",
+        "p1A",
+        "p1B",
+        "p1C",
+        "p2",
+        "p2A",
+        "p2B",
+        "p2C",
+        "p3",
+        "p3A",
+        "p3B",
+        "p3C",
+        "p4",
         "88"
       ),
       labels = c(
-        "X-pNX",
-        "0-pN0",
-        "0I-pN0i0I+ pN0i+",
-        "0M-pN0m0M+ pN0m+",
-        "1MI-pN1mi",
-        "0A-pN0a",
-        "0B-pN0b",
-        "1-pN1",
-        "1A-pN1a",
-        "1B-pN1b",
-        "1C-pN1c",
-        "2-pN2",
-        "2A-pN2a",
-        "2B-pN2b",
-        "2C-pN2c",
-        "3-pN3",
-        "3A-pN3a",
-        "3B-pN3b",
-        "3C-pN3c",
-        "4-pN4",
-        "88-Not applicable"
+        "pNX",
+        "pN0",
+        "pN0i-",
+        "pN0i+",
+        "pN0m-",
+        "pN0m+",
+        "pN1mi",
+        "pN0a",
+        "pN0b",
+        "pN1",
+        "pN1a",
+        "pN1b",
+        "pN1c",
+        "pN2",
+        "pN2a",
+        "pN2b",
+        "pN2c",
+        "pN3",
+        "pN3a",
+        "pN3b",
+        "pN3c",
+        "pN4",
+        "Not applicable"
       )
     )
 
-  ### TNM_PATH_M - AJCC Pathologic M
+
+
+  df$pN_RECODE <- NA
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pNX")] <- 0
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pN0", "pN0i-", "pN0i+", "pN0m-", "pN0m+", "pN0a", "pN0b")] <- 1
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pN1mi", "pN1", "pN1a", "pN1b", "pN1c")] <- 2
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pN2", "pN2a", "pN2b", "pN2c")] <- 3
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pN3", "pN3a", "pN3b", "pN3c")] <- 4
+  df$pN_RECODE[df$TNM_PATH_N %in% c("pN4")] <- 5
+
+
+  df$pN_RECODE <-
+    factor(
+      df$pN_RECODE,
+      levels = c(0, 1, 2, 3, 4, 5),
+      labels = c("NX",
+                 "N0",
+                 "N1",
+                 "N2",
+                 "N3",
+                 "N4")
+    )
+
+  var_label(df$pN_RECODE) <- "Pathologic N"
+
+  #TNM_PATH_M - AJCC Pathologic M
   # Identifies the pathologically determined tumor size and/or extension (pT) as
   # defined by the American Joint Committee on Cancer (AJCC)
 
   df$TNM_PATH_M <-
     factor(
       df$TNM_PATH_M,
-      levels = c("X", "0", "0I", "1", "1A", "1B", "1C", "1D", "88"),
+      levels = c(
+        "p0",
+        "p0I+",
+        "p1",
+        "p1A",
+        "p1B",
+        "p1C",
+        "p1D",
+        "88"
+      ),
       labels = c(
-        "X-pMX",
-        "0-pM0",
-        "0I+-pM0(i+)",
-        "1-pM1",
-        "1A-pM1a",
-        "1B-pM1b",
-        "1C-pM1c",
-        "1D-pM1d",
-        "88-Not applicable (not defined)"
+        "pM0",
+        "pM0(i+)",
+        "pM1",
+        "pM1a",
+        "pM1b",
+        "pM1c",
+        "pM1d",
+        "Not appliable"
       )
     )
 
-  ### TNM_PATH_STAGE_GROUP
-  # Identifies the pathologically-determiend anatomic extent of disease based on the T,
+
+  df$pM_RECODE <- NA
+  df$pM_RECODE[df$TNM_PATH_M %in% c("pMX")] <- 0
+  df$pM_RECODE[df$TNM_PATH_M %in% c("pM0", "pM0(i+)")] <- 1
+  df$pM_RECODE[df$TNM_PATH_M %in% c("pM1", "pM1a", "pM1b", "pM1c", "pM1d")] <- 2
+  df$pM_RECODE[df$TNM_PATH_M %in% c("Not applicable (not defined)")] <- ""
+
+
+  df$pM_RECODE <-
+    factor(
+      df$pM_RECODE,
+      levels = c(0, 1, 2),
+      labels = c("Mx",
+                 "M0",
+                 "M1"
+      )
+    )
+
+  var_label(df$pM_RECODE) <- "Pathologic M"
+
+  #TNM_PATH_STAGE_GROUP
+  # Identifies the pathologically-determined anatomic extent of disease based on the T,
   # N, and M elements as defined by the American Joint Committee on Cancer (AJCC).
 
   df$TNM_PATH_STAGE_GROUP <-
@@ -1456,7 +1513,7 @@ NCDBRecode <- function(df) {
         "1B1",
         "1B2",
         "1C",
-        "1S",
+        "IS",
         "2",
         "2A",
         "2A1",
@@ -1477,46 +1534,71 @@ NCDBRecode <- function(df) {
         "4C",
         "OC",
         "88",
-        "99",
-        "Blank"
+        "99"
       ),
       labels = c(
-        "0-pStage 0",
-        "0A-pStage 0A",
-        "0IS-pStage 0is",
-        "1-pStage I",
-        "1A-pStage IA",
-        "1A1-pStage IA1",
-        "1A2-pStage IA2",
-        "1B-pStage IB",
-        "1B1-pStage IB1",
-        "1B2-pStage IB2",
-        "1C-pStage IC",
-        "1S-pStage IS",
-        "2-pStage II",
-        "2A-pStage IIA",
-        "2A1-pStage IIA1",
-        "2A2-pStage IIA2",
-        "2B-pStage IIB",
-        "2C-pStage IIC",
-        "3-pStage III",
-        "3A-pStage IIIA",
-        "3B-pStage IIIB",
-        "3C-pStage IIIC",
-        "3C1-pStage IIIC1",
-        "3C2-pStage IIIC2",
-        "4-pStage IV",
-        "4A-pStage IVA",
-        "4A1-pStage IVA1",
-        "4A2-pStage IVA2",
-        "4B-pStage 4B",
-        "4C-pStage IVC",
-        "OC-Occult",
-        "88-Not applicable",
-        "99-Unknown",
-        "Blank-No pathologic staging for this case (2008+ only)"
-      )
+        "pStage 0",
+        "pStage 0A",
+        "pStage 0is",
+        "pStage I",
+        "pStage IA",
+        "pStage IA1",
+        "pStage IA2",
+        "pStage IB",
+        "pStage IB1",
+        "pStage IB2",
+        "pStage IC",
+        "pStage IS",
+        "pStage II",
+        "pStage IIA",
+        "pStage IIA1",
+        "pStage IIA2",
+        "pStage IIB",
+        "pStage IIC",
+        "pStage III",
+        "pStage IIIA",
+        "pStage IIIB",
+        "pStage IIIC",
+        "pStage IIIC1",
+        "pStage IIIC2",
+        "pStage IV",
+        "pStage IVA",
+        "pStage IVA1",
+        "pStage IVA2",
+        "pStage IVB",
+        "pStage IVC",
+        "Occult",
+        "Not applicable",
+        "Unknown"
+        )
     )
+
+  df$pSTAGE_RECODE <- NA
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("pStage 0","pStage 0A","pStage 0is")] <- 0
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("pStage I","pStage IA","pStage IA1","pStage IA2","pStage IB","pStage IB1","pStage IB2","pStage IC","pStage IS")] <- 1
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("pStage II","pStage IIA","pStage IIA1","pStage IIA2","pStage IIB","pStage IIC")] <- 2
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("pStage III","pStage IIIA","pStage IIIB","pStage IIIC","pStage IIIC1","pStage IIIC2")] <- 3
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("pStage IV", "pStage IVA","pStage IVA1","pStage IVA2","pStage IVB","pStage IVC")] <- 4
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("Occult")] <- 5
+  df$pSTAGE_RECODE[df$TNM_PATH_STAGE_GROUP %in% c("Not applicable", "Unknown")] <- 6
+
+
+  df$pSTAGE_RECODE <-
+    factor(
+      df$pSTAGE_RECODE,
+      levels = c(0, 1, 2, 3, 4, 5, 6),
+      labels = c("pStage 0",
+                 "pStage I",
+                 "pStage II",
+                 "pStage III",
+                 "pStage IV",
+                 "Occult",
+                 "Not applicable/Unknown")
+    )
+
+  var_label(df$pSTAGE_RECODE) <- "AJCC Pathologic Stage Group"
+
+
 
   ### ANALYTIC_STAGE_GROUP - NCDB Analytic Stage Group
   # Analytic Stage Group is assigned the value of reported Pathologic Stage Group.
