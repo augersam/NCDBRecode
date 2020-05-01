@@ -1599,8 +1599,35 @@ NCDBRecode <- function(df) {
   var_label(df$pSTAGE_RECODE) <- "AJCC Pathologic Stage Group"
 
 
+  #TNM_EDITION_NUMBER
+  # Identifies the edition number of the AJCC Cancer Staging Manual used to stage the
+  # case
 
-  ### ANALYTIC_STAGE_GROUP - NCDB Analytic Stage Group
+  df$TNM_EDITION_NUMBER <-
+    factor(
+      df$TNM_EDITION_NUMBER,
+      levels = c(
+        "0",
+        "5",
+        "6",
+        "7",
+        "88",
+        "99"
+      ),
+      labels = c(
+        "Not staged", #cases that have AJCC staging scheme and staging was not done
+        "5th Edition",
+        "6th Edition",
+        "7th Edition",
+        "Not applicable", #cases that do not have an AJCC staging scheme
+        "Staged, edition unknown" #prior to the 5th edition
+      )
+    )
+
+
+  var_label(df$TNM_EDITION_NUMBER) <- "TNM Edition Number"
+
+  #ANALYTIC_STAGE_GROUP
   # Analytic Stage Group is assigned the value of reported Pathologic Stage Group.
   # Clinical Stage Group is used if pathologic stage is not reported. Sub-stage groups
   # are collapsed into the corresponding general stage designation. The alphanumeric
@@ -1622,39 +1649,7 @@ NCDBRecode <- function(df) {
       )
     )
 
-  df$STAGE_RECODE <- NA
-  df$STAGE_RECODE[df$ANALYTIC_STAGE_GROUP %in% c(
-    "Stage 0",
-    "Stage I",
-    "Stage II"
-  )] <- 0
-  df$STAGE_RECODE[df$ANALYTIC_STAGE_GROUP %in% c(
-    "Stage III",
-    "Stage IV"
-  )] <- 1
-  df$STAGE_RECODE[df$ANALYTIC_STAGE_GROUP %in% c(
-    "Occult (lung only)",
-    "AJCC Staging not applicable",
-    "AJCC Stage group unknown"
-  )] <- 2
-
-  df$STAGE_RECODE <-
-    factor(
-      df$STAGE_RECODE,
-      levels = c(0, 1, 2),
-      labels = c("Low (I/II)",
-                 "High (III/IV)",
-                 "Other")
-    )
-
-  var_label(df$STAGE_RECODE) <- "Stage"
-
-
-  ### TNM_EDITION_NUMBER
-  # Identifies the edition number of the AJCC Cancer Staging Manual used to stage the
-  # case
-
-  ### CS Site specific junk goes here
+    ### CS Site specific junk goes here
 
   ### LYMPH_VASCULAR_INVASION - Lymph-vascular invasion
   # Indicates the presence or absence of tumor cells in lymphatic channels (not lymph
