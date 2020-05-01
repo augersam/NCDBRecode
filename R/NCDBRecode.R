@@ -5,7 +5,8 @@
 
 NCDBRecode <- function(df) {
 
-  ################## PATIENT DEMOGRAPHICS#################
+  #PATIENT DEMOGRAPHICS####
+
   # PUF_CASE_ID - Unique case identification number assigned to the case in the PUF.
   # NCDB assigned value that uniquely identifies each case included in the PUF. The value
   # assigned to each case is selected at random, and the value assigned to each case will
@@ -524,7 +525,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$CDCC_TOTAL_BEST) <- "Charlson/Deyo Score"
 
-  ################## CANCER IDENTIFICATION #################
+  #CANCER IDENTIFICATION####
 
   #SEQUENCE_NUMBER - NOT DONE - Unsure how to manage mix of continuous and categorical
   #Indicates the sequence of malignant and non-malignant neoplasms over the lifetime of the patient.
@@ -847,7 +848,7 @@ NCDBRecode <- function(df) {
   #     )
   #   )
 
-  ################## STAGE OF DISEASE ######################
+  #STAGE OF DISEASE####
 
 
   #DX_STAGING_PROC_DAYS
@@ -1649,9 +1650,133 @@ NCDBRecode <- function(df) {
       )
     )
 
-    ### CS Site specific junk goes here
 
-  ### LYMPH_VASCULAR_INVASION - Lymph-vascular invasion
+  ### CS_METS_DX_BONE - CS Mets at DX-Bone
+  # Identifies whether there is metastatic involvement of distant site(s) at the time of
+  # diagnosis
+
+  df$METS_AT_DX_BONE <-
+    factor(
+      df$CS_METS_DX_BONE,
+      levels = c(0, 1, 8, 9),
+      labels = c(
+        "None", # no bone metastases
+        "Yes",
+        "Not applicable",
+        "Unknown" # whether bone is involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$METS_AT_DX_BONE) <- "Bone metastases at diagnosis"
+
+
+  #METS_AT_DX_BRAIN
+  # Identifies the presence of distant metastatic involvement of the bone at the time of
+  # diagnosis
+
+  df$METS_AT_DX_BRAIN <-
+    factor(
+      df$METS_AT_DX_BRAIN,
+      levels = c(0, 1, 8, 9),
+      labels = c(
+        "None", # no brain metastases"
+        "Yes",
+        "Not applicable",
+        "Unknown" # unknown  whether brain is involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$CS_METS_DX_BRAIN) <- "Brain metastases as diagnosis"
+
+  #METS_AT_DX_LIVER
+  # Identifies the presence of distant metastatic involvement of the liver at the time of
+  # diagnosis
+
+  df$METS_AT_DX_LIVER <-
+    factor(
+      df$CS_METS_DX_LIVER,
+      levels = c(0, 1, 8, 9),
+      labels = c(
+        "None", # no liver metastases"
+        "Yes",
+        "Not applicable",
+        "Unknown" # whether liver is involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$METS_AT_DX_LIVER) <- "Liver metastases as diagnosis"
+
+
+  #METS_AT_DX_LUNG
+  # Identifies the presence of distant metastatic involvement of the lung at the time of
+  # diagnosis
+
+  df$METS_AT_DX_LUNG <-
+    factor(
+      df$METS_AT_DX_LUNG,
+      levels = c(0, 1, 8, 9),
+      labels = c(
+        "None", # no lung metastases
+        "Yes",
+        "Not applicable",
+        "Unknown" # whether lung is involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$METS_AT_DX_LUNG) <- "Lung metastases as diagnosis"
+
+  #METS_AT_DX_DISTANT_LN
+  # identifies whether distant lymph node(s) are an involved metastatic site.
+
+  df$METS_AT_DX_DISTANT_LN <-
+    factor(
+      df$METS_AT_DX_DISTANT_LN,
+      levels = c(0, 1, 8, 9),
+      labels = c(
+        "None", # no distant LN metastases
+        "Yes",
+        "Not applicable",
+        "Unknown" # whether distant LN are involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$METS_AT_DX_DISTANT_LN) <- "Distant LN metastases as diagnosis"
+
+
+  #METS_AT_DX_OTHER
+  # This data item identifies whether other metastatic involvement, other than bone, brain,
+  #liver, lung or distant lymph nodes exists. Some examples include but are not limited to
+  #the adrenal gland, bone marrow, pleura, peritoneum, and skin. T
+
+  df$METS_AT_DX_OTHER <-
+    factor(
+      df$METS_AT_DX_OTHER,
+      levels = c(0, 1, 2, 8, 9),
+      labels = c(
+        "None", # no other metastases
+        "Yes", # distant metastases in known site(s) other than bone, brain, liver, lung or distant lymph nodes.
+        "Generalized metastases", #such as carcinomatosis
+        "Not applicable",
+        "Unknown" # whether other metastatic site is involved; Not documented in patient record
+      )
+    )
+
+  var_label(df$METS_AT_DX_OTHER) <- "Other metastases as diagnosis"
+
+  #CS_EXTENSION
+  # Identifies contiguous growth (extension) of the primary tumor within the organ or origin or its direct
+  # extension into neighboring organs. For some sites such as ovary, discontinuous metastasis is coded in CS Extension.
+  # CS extension codes are found here: http://ncdbpuf.facs.org/?q=node/370
+  # TODO: create function for CS values
+
+  # separate function here to decode using this http://ncdbpuf.facs.org/sites/default/files/cs/cs_head_neck_replpgs01.02.00.pdf
+
+  #CS_TUMOR_SIZEEXT_EVAL
+  # Records how the codes for the two items, CS Tumor Size and CS Extension were determined,
+  # based on the diagnostic methods employed.
+  # TODO: pull info from here: http://web2.facs.org/cstage0205/mouthother/MouthOther_cpa.html
+
+  ### LYMPH_VASCULAR_INVASION
   # Indicates the presence or absence of tumor cells in lymphatic channels (not lymph
   # nodes) or blood vessels within the primary tumor as noted microscopically by the
   # pathologist. This data item is separate from the CS data items but is included in this
@@ -1666,10 +1791,10 @@ NCDBRecode <- function(df) {
       df$LYMPH_VASCULAR_INVASION,
       levels = c(0, 1, 8, 9),
       labels = c(
-        "Lymph-vascular invasion is not present (absent) or not identified",
-        "Lymph-vascular invasion is present or identified",
+        "None", #http://web2.facs.org/cstage0205/mouthother/MouthOther_cpa.html
+        "Present", #Lymph-vascular invasion is present or identified",
         "Not applicable",
-        "Unknown if lymph-vascular invasion is present, or indeterminant"
+        "Unknown" # unknown if lymph-vascular invasion is present, or indeterminant"
       )
     )
 
@@ -1678,24 +1803,25 @@ NCDBRecode <- function(df) {
 
   ### CS_METS_AT_DX - CS Mets at DX
   # Identifies whether there is metastatic involvement of distant site(s) at the time of
-  # diagnosis
+  # diagnosis.
   # codes found at http://web2.facs.org/205/nasalcavity/NasalCavity_hpb.html
+  # TODO: large effort to make this applicable to all NCDB sites since each CS variable
+  # has site-specific values.
+  # df$CS_METS_AT_DX <-
+  #   factor(
+  #     as.numeric(df$CS_METS_AT_DX),
+  #     levels = c(00, 10, 40, 50, 60, 99),
+  #     labels = c(
+  #       "No distant metastasis",
+  #       "Distant lymph node(s)",
+  #       "Distant metastases except distant lymph nodes",
+  #       "Distant metastasis plus distant lymph nodes",
+  #       "Distant metastasis, NOS",
+  #       "Unknown"
+  #     )
+  #   )
 
-  df$CS_METS_AT_DX <-
-    factor(
-      as.numeric(df$CS_METS_AT_DX),
-      levels = c(00, 10, 40, 50, 60, 99),
-      labels = c(
-        "No distant metastasis",
-        "Distant lymph node(s)",
-        "Distant metastases except distant lymph nodes",
-        "Distant metastasis plus distant lymph nodes",
-        "Distant metastasis, NOS",
-        "Unknown"
-      )
-    )
-
-  var_label(df$CS_METS_AT_DX) <- "Metastases at diagnosis"
+  var_label(df$CS_METS_AT_DX) <- "(CS) Metastases at diagnosis"
 
   ### CS_METS_DX_BONE - CS Mets at DX-Bone
   # Identifies whether there is metastatic involvement of distant site(s) at the time of
@@ -1706,14 +1832,14 @@ NCDBRecode <- function(df) {
       df$CS_METS_DX_BONE,
       levels = c(0, 1, 8, 9),
       labels = c(
-        "None; no bone metastases",
+        "None", # no bone metastases
         "Yes",
         "Not applicable",
-        "Unknown whether bone is involved; Not documented in patient record"
+        "Unknown" # whether bone is involved; Not documented in patient record
       )
     )
 
-  var_label(df$CS_METS_DX_BONE) <- "Bone metastases at diagnosis"
+  var_label(df$CS_METS_DX_BONE) <- "(CS) Bone metastases at diagnosis"
 
   ### CS_METS_DX_Brain - CS Mets at DX-Brain
   # Identifies the presence of distant metastatic involvement of the bone at the time of
@@ -1724,14 +1850,14 @@ NCDBRecode <- function(df) {
       df$CS_METS_DX_BRAIN,
       levels = c(0, 1, 8, 9),
       labels = c(
-        "None; no brain metastases",
+        "None", # no brain metastases"
         "Yes",
         "Not applicable",
-        "Unknown whether brain is involved; Not documented in patient record"
+        "Unknown" # unknown  whether brain is involved; Not documented in patient record
       )
     )
 
-  var_label(df$CS_METS_DX_BRAIN) <- "Brain metastases as diagnosis"
+  var_label(df$CS_METS_DX_BRAIN) <- "(CS) Brain metastases as diagnosis"
 
   ### CS_METS_DX_Liver - CS Mets at DX-Liver
   # Identifies the presence of distant metastatic involvement of the liver at the time of
@@ -1742,14 +1868,14 @@ NCDBRecode <- function(df) {
       df$CS_METS_DX_LIVER,
       levels = c(0, 1, 8, 9),
       labels = c(
-        "None; no liver metastases",
+        "None", # no liver metastases"
         "Yes",
         "Not applicable",
-        "Unknown whether liver is involved; Not documented in patient record"
+        "Unknown" # whether liver is involved; Not documented in patient record
       )
     )
 
-  var_label(df$CS_METS_DX_LIVER) <- "Liver metastases as diagnosis"
+  var_label(df$CS_METS_DX_LIVER) <- "(CS) Liver metastases as diagnosis"
 
 
   ### CS_METS_DX_LUNG - CS Mets at DX-LUNG
@@ -1761,27 +1887,34 @@ NCDBRecode <- function(df) {
       df$CS_METS_DX_LUNG,
       levels = c(0, 1, 8, 9),
       labels = c(
-        "None; no lung metastases",
+        "None", # no lung metastases
         "Yes",
         "Not applicable",
-        "Unknown whether lung is involved; Not documented in patient record"
+        "Unknown" # whether lung is involved; Not documented in patient record
       )
     )
 
-  var_label(df$CS_METS_DX_LUNG) <- "Lung metastases as diagnosis"
+  var_label(df$CS_METS_DX_LUNG) <- "(CS) Lung metastases as diagnosis"
 
+  #CS_SITESPECIFIC_FACTORs
+  # TODO: http://ncdbpuf.facs.org/?q=node/370 find way to do this
 
-  ### CS_METS_EVAL
-  # not recoded
+  #CS_METS_EVAL
+  # Records how the code for CS Mets at DX was determined based on the diagnostic methods employed.
+  # TODO: do with other CS codes
 
+  #TUMOR_SIZE
+  # Describes the largest dimension of the diameter of the primary tumor in millimeters(mm).
 
-  ### TUMOR_SIZE
-  # Describes the largest dimension of the diameter of the primary tumor in millimeters
-  # (mm).
+  var_label(df$TUMOR_SIZE) <- "Size of Tumor (mm)"
 
+  #CS_VERSION_LATEST
+  #This is the version number of the most recent derivation of CS data items in the record.
+  # TODO
 
-  ################## TREATMENT    ##########################
-  ### RX_SUMM_TREATMENT_STATUS - Treatment Status
+  #TREATMENT####
+
+  #RX_SUMM_TREATMENT_STATUS - Treatment Status
   # This item summarizes whether the patient received any treatment or was under
   # active surveillance.
   df$RX_SUMM_TREATMENT_STATUS <-
@@ -1796,36 +1929,40 @@ NCDBRecode <- function(df) {
       )
     )
 
-  var_label(df$RX_SUMM_TREATMENT_STATUS) <- "Treatment summary"
+  var_label(df$RX_SUMM_TREATMENT_STATUS) <- "Treatment status"
 
-
-  ### DX_RX_STARTED_DAYS
+  #DX_RX_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which treatment [surgery, radiation, systemic, or other therapy] (NAACCR
   # Item #1270) of the patient began at any facility
 
-  var_label(df$DX_RX_STARTED_DAYS) <- "Means days from diagnosis to treatment"
+  var_label(df$DX_RX_STARTED_DAYS) <- "Treatment started, days from diagnosis"
 
-  ### DX_SURG_STARTED_DAYS - First Surgical Procedure, days from dx
+  #DX_SURG_STARTED_DAYS - First Surgical Procedure, days from dx
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date the first treatment surgery was performed (NAACCR Item #1200). The surgery
   # may be primary site surgery (NAACCR Item #1290), regional lymph node surgery
   # (NAACCR Item #1292) or other regional or distant surgery (NAACCR Item #1294).
   # Incisional biopsies are not coded as treatment surgery.
 
-  ### DX_DEFSURG_STARTED_DAYS - Definitive Surgical Procedure, days from dx
+  var_label(df$DX_SURG_STARTED_DAYS) <- "First surgical procedure, days from diagnosis"
+
+  #DX_DEFSURG_STARTED_DAYS - Definitive Surgical Procedure, days from dx
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which the most definitive surgical procedure was performed on the primary
   # site (NAACCR Item #3170).
 
-  ### RX_SUMM_SURG_PRIM_SITE - Surgical procedure of the primary site
+  var_label(df$DX_DEFSURG_STARTED_DAYS) <- "Definitive Surgical Procedure, Days from Dx"
+
+  #RX_SUMM_SURG_PRIM_SITE - Surgical procedure of the primary site
   # Records the surgical procedure performed to the primary site at any facility.
   # "00-None No surgical procedure of primary site. Diagnosed at autopsy."
-  # "10--19 Site-specific codes; tumor destruction Tumor destruction, no pathologic specimen produced.  efer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure."
+  # "10--19 Site-specific codes; tumor destruction Tumor destruction, no pathologic specimen produced.  Refer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure."
   # "20--80-Site-specific codes; resection Refer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure. "
   # "90-Surgery, NOS A surgical procedure to the primary site was done, but no information on the type of surgical procedure is provided. "
   # "98-Site-specific codes; special Special code. Refer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure."
   # "99-Unknown Patient record does not state whether a surgical procedure of the primary site was performed and no information is available. Death certificate only."
+  # TODO
 
   df$RX_SUMM_SURG_PRIM_SITE <-
     factor(
@@ -1837,7 +1974,7 @@ NCDBRecode <- function(df) {
   var_label(df$RX_SUMM_SURG_PRIM_SITE) <- "Surgical procedure of primary site"
 
 
-  ### RX_HOSP_SURG_PRIM_SITE - Surgery at this facility
+  #RX_HOSP_SURG_PRIM_SITE
   # This item records the surgical procedure performed to the primary site at the facility
   # that submitted this record
   # Records the surgical procedure performed to the primary site at any facility.
@@ -1848,7 +1985,9 @@ NCDBRecode <- function(df) {
   # "98-Site-specific codes; special Special code. Refer to Surgery of the Primary Site Codes for the correct site-specific code for the procedure."
   # "99-Unknown Patient record does not state whether a surgical procedure of the primary site was performed and no information is available. Death certificate only."
 
-  ### RX_HOSP_SURG_APPR_2010 - Surgical Approach ONLY USED AFTER 2010
+  var_label(df$RX_SUMM_SURG_PRIM_SITE) <- "Surgery at this Facility"
+
+  #RX_HOSP_SURG_APPR_2010 - Surgical Approach ONLY USED AFTER 2010
   # This item is used to monitor patterns and trends in the adoption and utilization of
   # minimally-invasive surgical techniques.
 
@@ -1867,48 +2006,46 @@ NCDBRecode <- function(df) {
       )
     )
 
-  ### RX_SUMM_SURGICAL_MARGINS - Surgical Margins
+  #RX_SUMM_SURGICAL_MARGINS - Surgical Margins
   # Records the final status of the surgical margins after resection of the primary
   # tumor.
-  df$RX_SUMM_SURGICAL_MARGINS <-
+
+    df$RX_SUMM_SURGICAL_MARGINS <-
     factor(
       df$RX_SUMM_SURGICAL_MARGINS,
       levels = c(0, 1, 2, 3, 7, 8, 9),
       labels = c(
-        "No residual tumor All margins are grossly and microscopically negative.",
-        "Residual tumor, NOS Involvement is indicated, but not otherwise specified.",
-        "Microscopic residual tumor. Cannot be seen by the naked eye.",
-        "Macroscopic residual tumor. Gross tumor of the primary site which is visible to the naked eye.",
-        "Margins not evaluable Cannot be assessed (indeterminate).",
-        "No primary site surgery No surgical procedure of the primary site. Diagnosed at autopsy.",
-        "Unknown or not applicable. It is unknown whether a surgical procedure to the primary site was performed; death certificate-only; for lymphomas with a lymph node primary site; an unknown or ill-defined primary; or for hematopoietic, reticuloendothelial, immunoproliferative, or myeloproliferative disease"
+        "No residual tumor", # All margins are grossly and microscopically negative
+        "Residual tumor, NOS", #Involvement is indicated, but not otherwise specified
+        "Microscopic residual tumor", # Cannot be seen by the naked eye
+        "Macroscopic residual tumor", #Gross tumor of the primary site which is visible to the naked eye
+        "Margins not evaluable", # Cannot be assessed (indeterminate)
+        "No primary site surgery", # No surgical procedure of the primary site. Diagnosed at autopsy
+        "Unknown or not applicable" # It is unknown whether a surgical procedure to the primary site was performed; death certificate-only; for lymphomas with a lymph node primary site; an unknown or ill-defined primary; or for hematopoietic, reticuloendothelial, immunoproliferative, or myeloproliferative disease"
       )
     )
 
-  df$MARGINS <- NA
-  df$MARGINS[df$RX_SUMM_SURGICAL_MARGINS %in% c("No residual tumor All margins are grossly and microscopically negative.")] <-
-    0
-  df$MARGINS[df$RX_SUMM_SURGICAL_MARGINS %in% c(
-    "Residual tumor, NOS Involvement is indicated, but not otherwise specified.",
-    "Microscopic residual tumor. Cannot be seen by the naked eye.",
-    "Macroscopic residual tumor. Gross tumor of the primary site which is visible to the naked eye."
-  )] <- 1
-  df$MARGINS[df$RX_SUMM_SURGICAL_MARGINS %in% c(
-    "Margins not evaluable Cannot be assessed (indeterminate).",
-    "No primary site surgery No surgical procedure of the primary site. Diagnosed at autopsy.",
-    "Unknown or not applicable. It is unknown whether a surgical procedure to the primary site was performed; death certificate-only; for lymphomas with a lymph node primary site; an unknown or ill-defined primary; or for hematopoietic, reticuloendothelial, immunoproliferative, or myeloproliferative disease"
-  )] <- 2
+  df$MARGINS_RECODE <- NA
+  df$MARGINS_RECODE[df$RX_SUMM_SURGICAL_MARGINS %in% c("No residual tumor")] <-    0
+  df$MARGINS_RECODE[df$RX_SUMM_SURGICAL_MARGINS %in% c(
+    "Residual tumor, NOS",
+    "Microscopic residual tumor",
+    "Macroscopic residual tumor"  )] <- 1
+  df$MARGINS_RECODE[df$RX_SUMM_SURGICAL_MARGINS %in% c(
+    "MARGINS_RECODE not evaluable",
+    "No primary site surgery",
+    "Unknown or not applicable")] <- 2
 
-  df$MARGINS <-
+  df$MARGINS_RECODE <-
     factor(
-      df$MARGINS,
+      df$MARGINS_RECODE,
       levels = c(0, 1, 2),
       labels = c("Negative margin",
                  "Positive margin",
                  "Indeterminate/NA")
     )
 
-  var_label(df$MARGINS) <- "Margins"
+  var_label(df$MARGINS_RECODE) <- "MARGINS (recoded)"
 
 
   ### RX_SUMM_SCOPE_REG_LN_SUR - Scope of regional LN Surgery
@@ -2867,7 +3004,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$NEOADJUVANTRT) <- "Neo/adjuvant Radiation Treatment"
 
-    ################## OUTCOMES     ##########################
+#OUTCOMES####
 
   ### PUF_30_DAY_MORT_CD - Thirty Day Mortality
   # This item indicates mortality within 30 days of the most definitive primary site
@@ -2933,7 +3070,7 @@ NCDBRecode <- function(df) {
 
 
 
-  #### OUTPUT ####
+  #OUTPUT####
   #returns recoded dataframe
   df
 }
