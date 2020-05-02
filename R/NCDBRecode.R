@@ -2706,13 +2706,13 @@ NCDBRecode <- function(df) {
       )
     )
 
-  val_label(df$RX_HOSP_CHEMO) <- "Chemotherapy at this facility"
+  var_label(df$RX_HOSP_CHEMO) <- "Chemotherapy at this facility"
 
   #DX_CHEMO_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which chemotherapy at any facility was started (NAACCR Item #1220).
 
-  val_label(df$DX_CHEMO_STARTED_DAYS) <- "Chemotherapy, days from diagnosis"
+  var_label(df$DX_CHEMO_STARTED_DAYS) <- "Chemotherapy, days from diagnosis"
 
   #RX_SUMM_HORMONE
   # Records the type of hormone therapy administered as first course treatment at any
@@ -2930,7 +2930,7 @@ NCDBRecode <- function(df) {
 
   var_label(df$RX_SUMM_SYSTEMIC_SUR_SEQ) <- "Systemic treatment and surgery sequence"
 
-  ### RX_SUMM_OTHER - Other Treatment
+  #RX_SUMM_OTHER
   # Identifies other treatment that cannot be defined as surgery, radiation, or systemic
   # therapy according to the defined data items in this manual.
 
@@ -2939,20 +2939,20 @@ NCDBRecode <- function(df) {
       df$RX_SUMM_OTHER,
       levels = c(0, 1, 2, 3, 6, 7, 8, 9),
       labels = c(
-        "None",
-        "Other",
-        "Other-Experimental",
-        "Other-Double Blind",
-        "Other-Unproven",
-        "Refusal",
-        "Recommended; uknown if adminstered",
-        "Unknown"
+        "None", #All cancer treatment was coded in other treatment fields (surgery, radiation, systemic therapy). Patient received no cancer treatment. Diagnosed at autopsy.
+        "Other", #Cancer treatment that cannot be appropriately assigned to specified treatment data items (surgery, radiation, systemic). Use this code for treatment unique to hematopoietic diseases.
+        "Other-Experimental", #This code is not defined. It may be used to record participation in institution-based clinical trials.
+        "Other-Double Blind", #A patient is involved in a double-blind clinical trial. Code the treatment actually administered when the double-blind trial code is broken.
+        "Other-Unproven", #Cancer treatments administered by nonmedical personnel.
+        "Refusal", #Other treatment was not administered. It was recommended by the patient's physician, but this treatment (which would have been coded 1, 2, or 3) was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in the patient record.
+        "Recommended; uknown if adminstered", #Other treatment was recommended, but it is unknown whether it was administered.
+        "Unknown" #It is unknown whether other treatment was recommended or administered, and there is no information in the medical record to confirm the recommendation or administration of other treatment. Death certificate only.
       )
     )
 
-  var_label(df$RX_SUMM_OTHER) <- "Systemic Surgery Sequence"
+  var_label(df$RX_SUMM_OTHER) <- "Other Treatment"
 
-  ### RX_HOSP_OTHER - Other treatment at this facility
+  #RX_HOSP_OTHER - Other treatment at this facility
   # Identifies other treatment given at the reporting facility that cannot be defined as
   # surgery, radiation, or systemic therapy.
 
@@ -2961,23 +2961,27 @@ NCDBRecode <- function(df) {
       df$RX_HOSP_OTHER,
       levels = c(0, 1, 2, 3, 6, 7, 8, 9),
       labels = c(
-        "None",
-        "Other",
-        "Other-Experimental",
-        "Other-Double Blind",
-        "Other-Unproven",
-        "Refusal",
-        "Recommended; uknown if adminstered",
-        "Unknown"
+        "None", #All cancer treatment was coded in other treatment fields (surgery, radiation, systemic therapy). Patient received no cancer treatment. Diagnosed at autopsy.
+        "Other", #Cancer treatment that cannot be appropriately assigned to specified treatment data items (surgery, radiation, systemic). Use this code for treatment unique to hematopoietic diseases.
+        "Other-Experimental", #This code is not defined. It may be used to record participation in institution-based clinical trials.
+        "Other-Double Blind", #A patient is involved in a double-blind clinical trial. Code the treatment actually administered when the double-blind trial code is broken.
+        "Other-Unproven", #Cancer treatments administered by nonmedical personnel.
+        "Refusal", #Other treatment was not administered. It was recommended by the patient's physician, but this treatment (which would have been coded 1, 2, or 3) was refused by the patient, a patient's family member, or the patient's guardian. The refusal was noted in the patient record.
+        "Recommended; uknown if adminstered", #Other treatment was recommended, but it is unknown whether it was administered.
+        "Unknown" #It is unknown whether other treatment was recommended or administered, and there is no information in the medical record to confirm the recommendation or administration of other treatment. Death certificate only.
       )
     )
 
-  ### DX_OTHER_STARTED_DAYS - Other Treatment, days from DX
+  var_label(df$RX_HOSP_OTHER) <- "Other treatment at this facility"
+
+  #DX_OTHER_STARTED_DAYS
   # The number of days between the date of diagnosis (NAACCR Item #390) and the
   # date on which Other Treatment at any facility was started (NAACCR Item
   # #1250).
 
-  ### PALLIATIVE_CARE - Palliative Care
+  var_label(df$DX_OTHER_STARTED_DAYS) <- "Other Treatment, days from diagnosis"
+
+  #PALLIATIVE_CARE
   # Identifies any care provided in an effort to palliate or alleviate symptoms. Palliative
   # care is performed to relieve symptoms and may include surgery, radiation therapy,
   # systemic therapy (chemotherapy, hormone therapy, or other systemic drugs),
@@ -2988,22 +2992,47 @@ NCDBRecode <- function(df) {
       df$PALLIATIVE_CARE,
       levels = c(0, 1, 2, 3, 4, 5, 6, 7, 9),
       labels = c(
-        "No palliative care provided. Diagnosed at autopsy.",
-        "Surgery (which may involve a bypass procedure) to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
-        "Radiation therapy to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
-        "Chemotherapy, hormone therapy, or other systemic drugs to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
-        "Patient received or was referred for pain management therapy with no other palliative care.",
-        "Any combination of codes 1, 2, and/or 3 without code 4.",
-        "Any combination of codes 1, 2, and/or 3 with code 4.",
-        "Palliative care was performed or referred, but no information on the type of procedure is available in the patient record. Palliative care was provided that does not fit the descriptions for codes 1–6.",
-        "It is unknown if palliative care was performed or referred; not stated in patient record."
+        "None", #No palliative care provided. Diagnosed at autopsy.",
+        "Surgery", #(which may involve a bypass procedure) to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Radiation therapy", # to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Chemotherapy, hormone therapy, or other systemic", # drugs to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Pain management", #Patient received or was referred for pain management therapy with no other palliative care.",
+        "Combination of surgery, systemic without pain management", #Any combination of codes 1, 2, and/or 3 without code 4.
+        "Combination of surgery, systemic with pain management", #	Any combination of codes 1, 2, and/or 3 with code 4.
+        "Recommended, no information available", #Palliative care was performed or referred, but no information on the type of procedure is available in the patient record. Palliative care was provided that does not fit the descriptions for codes 1–6.",
+        "Unknown" #It is unknown if palliative care was performed or referred; not stated in patient record."
       )
     )
 
+  var_label(df$PALLIATIVE_CARE) <- "Palliative care"
 
-  var_label(df$PALLIATIVE_CARE) <- "Palliative Care"
+  #PALLIATIVE_CARE_HOSP
+  # Identifies any care provided in an effort to palliate or alleviate symptoms at the reporting facility.
+  # Palliative care is performed to relieve symptoms and may include surgery, radiation therapy, systemic
+  #therapy (chemotherapy, hormone therapy, or other systemic drugs), and/or other pain management therapy.
+  #This data item was added to the 2015 PUF (data released in Fall 2017), and does not appear in prior versions of the PUF data.
+
+  df$PALLIATIVE_CARE_HOSP <-
+    factor(
+      df$PALLIATIVE_CARE_HOSP,
+      levels = c(0, 1, 2, 3, 4, 5, 6, 7, 9),
+      labels = c(
+        "None", #No palliative care provided. Diagnosed at autopsy.",
+        "Surgery", #(which may involve a bypass procedure) to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Radiation therapy", # to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Chemotherapy, hormone therapy, or other systemic", # drugs to alleviate symptoms, but no attempt to diagnose, stage, or treat the primary tumor is made.",
+        "Pain management", #Patient received or was referred for pain management therapy with no other palliative care.",
+        "Combination of surgery, systemic without pain management", #Any combination of codes 1, 2, and/or 3 without code 4.
+        "Combination of surgery, systemic with pain management", #	Any combination of codes 1, 2, and/or 3 with code 4.
+        "Recommended, no information available", #Palliative care was performed or referred, but no information on the type of procedure is available in the patient record. Palliative care was provided that does not fit the descriptions for codes 1–6.",
+        "Unknown" #It is unknown if palliative care was performed or referred; not stated in patient record."
+      )
+    )
+
+  var_label(df$PALLIATIVE_CARE_HOSP) <- "Palliative care at this facility"
 
 
+  #Alternative to decide if systemic treatment was before or after surgery
   ### Adjuvant VS Neoadjuvant chemo
   # 0 - No surgery, Chemo
   # 1 - Neoadjuvant = DX_CHEMO_START_DAYS > DX_RX_STARTED_DAYS
@@ -3073,7 +3102,7 @@ NCDBRecode <- function(df) {
 
 #OUTCOMES####
 
-  ### PUF_30_DAY_MORT_CD - Thirty Day Mortality
+  #PUF_30_DAY_MORT_CD - Thirty Day Mortality
   # This item indicates mortality within 30 days of the most definitive primary site
   # surgery
 
@@ -3082,16 +3111,16 @@ NCDBRecode <- function(df) {
       df$PUF_30_DAY_MORT_CD,
       levels = c(0, 1, 9),
       labels = c(
-        "Patient alive, or died more than 30 days after surgery performed",
-        "Patient died 30 or fewer days after surgery performed",
-        "Patient alive with fewer than 30 days of follow-up, surgery date missing, or last contact date missing"
+        "Alive", #or died more than 30 days after surgery performed",
+        "Dead", #Patient died 30 or fewer days after surgery performed",
+        "Alive, < 30 days FU" #Patient alive with fewer than 30 days of follow-up, surgery date missing, or last contact date missing"
       )
     )
 
   var_label(df$PUF_30_DAY_MORT_CD) <- "30-day Mortality"
 
 
-  ### PUF_90_DAY_MORT_CD - Nintey day mortality
+  #PUF_90_DAY_MORT_CD - Nintey day mortality
   # This item indicates mortality within 90 days after the most definitive primary site
   # surgery
 
@@ -3100,25 +3129,25 @@ NCDBRecode <- function(df) {
       df$PUF_90_DAY_MORT_CD,
       levels = c(0, 1, 9),
       labels = c(
-        "Patient alive, or died more than 90 days after surgery performed",
-        "Patient died 90 or fewer days after surgery performed",
-        "Patient alive with fewer than 90 days of follow-up, surgery date missing, or last contact date missing"
+        "Alive", #Patient alive, or died more than 90 days after surgery performed",
+        "Dead", #Patient died 90 or fewer days after surgery performed",
+        "Alive, < 90 days FU" #or surgery date missing, or last contact date missing"
       )
     )
 
   var_label(df$PUF_90_DAY_MORT_CD) <- "90-day Mortality"
 
 
-  ### DX_LASTCONTACT_DEATH_MONTHS - Last contact or death, months from dx
+  #DX_LASTCONTACT_DEATH_MONTHS
   # The number of months between the date of diagnosis (NAACCR Item #390) and
   # the date on which the patient was last contacted or died (NAACCR Item #1750).
 
-  ### PUF_VITAL_STATUS - PUF Vital Status
+  var_label(df$DX_LASTCONTACT_DEATH_MONTHS) <- "Last contact or death, months from dx"
+
+  #PUF_VITAL_STATUS - PUF Vital Status
   # Records the vital status of the patient as of the date entered in Date of Last Contact
   # or Death (NAACCR Item #1750), which is the status of the patient at the end of
   # Elapsed Months Date of Diagnosis to Date of Last Contact or Death in the PUF.
-
-  # Loop through rows and run the recodeStatus function
 
   df$PUF_VITAL_STATUS <-
     factor(
@@ -3127,15 +3156,6 @@ NCDBRecode <- function(df) {
       labels = c("Dead",
                  "Alive")
     )
-
-  df$RECODED_STATUS <- NA
-  df$RECODED_STATUS[df$PUF_VITAL_STATUS == "Dead"] <-
-    1
-  df$RECODED_STATUS[df$PUF_VITAL_STATUS == "Alive"] <-
-    0
-
-
-
 
   #OUTPUT####
   #returns recoded dataframe
