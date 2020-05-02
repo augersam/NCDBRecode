@@ -3161,3 +3161,18 @@ NCDBRecode <- function(df) {
   #returns recoded dataframe
   df
 }
+NCDBTableOne <- function(df){
+
+}
+NCDBOS <- function(df){
+
+}
+NCDB_AgeGrouping <- function(df){
+
+}
+NCDB_NodeGrouping <- function(df){
+
+}
+NCDB_MissingData <- function(df){
+
+}
