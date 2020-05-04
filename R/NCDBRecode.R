@@ -3157,15 +3157,50 @@ NCDBRecode <- function(df) {
                  "Alive")
     )
 
+  # R Survival object defaults to 0 = Alive, 1 = dead, recode to  use
+
+
   #OUTPUT####
   #returns recoded dataframe
+  df$RECODED_STATUS <- NA
+  df$RECODED_STATUS[df$PUF_VITAL_STATUS == "Dead"] <-  1
+  df$RECODED_STATUS[df$PUF_VITAL_STATUS == "Alive"] <- 0
+
   df
+
 }
 NCDBTableOne <- function(df){
 
 }
 NCDBOS <- function(df){
+  # Make survival object
+  survObject <-
+    Surv(time = df$DX_LASTCONTACT_DEATH_MONTHS,
+         event = df$RECODED_STATUS)
 
+  # Plot overall survival curve
+  fit <-
+    survfit(survObject ~ 1, data = df, conf.type = "log-log")
+  # plot <- ggsurvplot(
+  #   fit,
+  #   data = df,
+  #   risk.table = FALSE,
+  #   pval = FALSE,
+  #   conf.int = TRUE,
+  #   xlab = "Months Follow-up",
+  #   ylab = "Percent Alive",
+  #   censor = FALSE,
+  #   legend.title = ,
+  #   #legend.labs = strataLabels,
+  #   legend = "top",
+  #   #title = "Kaplan-Meier Overall Survival",
+  #   font.title = 12,
+  #   font.x = 10,
+  #   font.y = 10,
+  #   linetype = c(1:10),
+  #   palette = gray(0:8 / 8))
+
+    fit
 }
 NCDB_AgeGrouping <- function(df){
 
