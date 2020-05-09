@@ -2,9 +2,13 @@
 #'
 #' This package serves to recode the standard NCDB excel or stata .sav file for ease of survival analysis
 #' @export
+NCDBClean <- function(df){
+  #Remove cases with no survival info
+  df <- subset(df, !(is.na(df$PUF_VITAL_STATUS)))
+  df
 
+}
 NCDBRecode <- function(df) {
-
   #PATIENT DEMOGRAPHICS####
 
   # PUF_CASE_ID - Unique case identification number assigned to the case in the PUF.
@@ -3170,6 +3174,48 @@ NCDBRecode <- function(df) {
 
 }
 NCDBTableOne <- function(df){
+
+  tableOne <-
+    CreateTableOne(
+      vars = c(
+        "AGE_GROUP",
+        "SEX",
+        "RACE",
+        "CDCC_SHORT",
+        "INSURANCE_STATUS",
+        "MED_INC_QUAR_12",
+        "NO_HSD_QUAR_12",
+        "URBAN_RURAL",
+        "FACILITY_TYPE_CD",
+        "GRADE_RECODE",
+        "STAGE_RECODE",
+        "PRIMARY_SITE",
+        "SURGERY_MARGINS",
+        "ANY_RADIATION",
+        "ANY_CHEMO",
+        "DX_RX_STARTED_DAYS"
+      ),
+      data = df
+    )
+  #
+  # tableOnePrint <-
+  #   print(
+  #     tableOneSmall,
+  #     exact = "stage",
+  #     quote = FALSE,
+  #     noSpaces = TRUE,
+  #     printToggle = FALSE,
+  #     test = TRUE,
+  #     showAllLevels = TRUE,
+  #     missing = FALSE,
+  #     varLabels = TRUE
+  #   )
+
+
+
+  ## Save to a CSV file
+  #write.csv(tableOnePrint, file = "./tables/TableOneAuto.csv")
+  tableOne
 
 }
 NCDBOS <- function(df){
