@@ -6,7 +6,6 @@ NCDBClean <- function(df){
   #Remove cases with no survival info
   df <- subset(df, !(is.na(df$PUF_VITAL_STATUS)))
   df
-
 }
 NCDBRecode <- function(df) {
   #PATIENT DEMOGRAPHICS####
@@ -123,6 +122,10 @@ NCDBRecode <- function(df) {
   # Records the age of the patient at his or her last birthday before diagnosis.
 
   df$AGE
+
+  #AGE_GROUP
+  # declare a categorical variable to use with NCDBGroupAge
+  df$AGE_GROUP <- NA
 
   #SEX
   # Identifies the sex of the patient
@@ -3197,24 +3200,7 @@ NCDBTableOne <- function(df){
       ),
       data = df
     )
-  #
-  # tableOnePrint <-
-  #   print(
-  #     tableOneSmall,
-  #     exact = "stage",
-  #     quote = FALSE,
-  #     noSpaces = TRUE,
-  #     printToggle = FALSE,
-  #     test = TRUE,
-  #     showAllLevels = TRUE,
-  #     missing = FALSE,
-  #     varLabels = TRUE
-  #   )
 
-
-
-  ## Save to a CSV file
-  #write.csv(tableOnePrint, file = "./tables/TableOneAuto.csv")
   tableOne
 
 }
@@ -3248,7 +3234,23 @@ NCDBOS <- function(df){
 
     fit
 }
-NCDB_AgeGrouping <- function(df){
+NCDBGroupAge <- function(df){
+  # break ages into bins
+  #loop through rows and run the ageCalculation function
+  # function to sort into age groups
+  df$AGE_GROUP<-cut(
+    df$AGE,
+    breaks = c(-1,50,60,70, Inf),
+    labels = c(
+      "<50 years",
+      "50-60 years",
+      "60-70 years",
+      ">70 years"
+  ))
+
+  var_label(df$AGE_GROUP) <- "Age (grouped)"
+
+  df$AGE_GROUP
 
 }
 NCDB_NodeGrouping <- function(df){
