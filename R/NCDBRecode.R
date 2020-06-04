@@ -3283,7 +3283,47 @@ NCDBGroupAge <- function(df){
 
 }
 NCDB_NodeGrouping <- function(df){
+# group nodes for analysis as categorical variable
+df$REGIONAL_NODES_EXAMINED_GROUPED <- NA
+df$REGIONAL_NODES_POSITIVE_GROUPED <- NA
 
+df$REGIONAL_NODES_EXAMINED_GROUPED<-cut(
+  as.numeric(df$REGIONAL_NODES_EXAMINED),
+  breaks = c(-1, 20, 50, 89, 90,95,96, 97,98,99),
+  right = TRUE,
+  labels = c(
+     "0-20 nodes",
+     "21-50 nodes",
+     "51-89 nodes",
+     ">=90 nodes",
+     "No regional nodes removed, aspiration performed",
+     "Documented as sampling, number unknown",
+     "Documented as dissection, number unknown",
+     "Nodes surgically removed, number not documented",
+     "Unknown if regional nodes examined"
+
+   )
+)
+
+df$REGIONAL_NODES_POSITIVE_GROUPED<-cut(
+  as.numeric(df$REGIONAL_NODES_POSITIVE),
+  breaks = c(-1, 0, 1, 5, 10, 20, 90,95,96, 97,98,99),
+  right = TRUE,
+  labels = c(
+    "All examined nodes are negative",
+    "1 node positive",
+    "2-5 nodes positive",
+    "6-10 nodes positive",
+    "11-20 nodes positive",
+    "21-90 nodes positive",
+    "90+ nodes positive",
+    "Positive aspiration of nodes performed",
+    "Positive nodes documented, number unspecified",
+    "No nodes examined",
+    "Unknown whether nodes are positive"
+
+  )
+ )
 
 
 }
