@@ -126,6 +126,7 @@ NCDBRecode <- function(df) {
   #AGE_GROUP
   # declare a categorical variable to use with NCDBGroupAge
   df$AGE_GROUP <- NA
+  NCDBGroupAge(df$AGE)
 
   #SEX
   # Identifies the sex of the patient
@@ -1211,36 +1212,36 @@ NCDBRecode <- function(df) {
         "99"
       ),
       labels = c(
-        "0",
-        "0A",
-        "0is",
-        "I",
-        "IA",
-        "IA1",
-        "IA2",
-        "IB",
-        "IB1",
-        "IB2",
-        "IC",
-        "IS",
-        "II",
-        "IIA",
-        "IIA1",
-        "IIA2",
-        "IIB",
-        "IIC",
-        "III",
-        "IIIA",
-        "IIIB",
-        "IIIC",
-        "IIIC1",
-        "IIIC2",
-        "IV",
-        "IVA",
-        "IVA1",
-        "IVA2",
-        "IVB",
-        "IVC",
+        "cStage 0",
+        "cStage 0A",
+        "cStage 0is",
+        "cStage I",
+        "cStage IA",
+        "cStage IA1",
+        "cStage IA2",
+        "cStage IB",
+        "cStage IB1",
+        "cStage IB2",
+        "cStage IC",
+        "cStage IS",
+        "cStage II",
+        "cStage IIA",
+        "cStage IIA1",
+        "cStage IIA2",
+        "cStage IIB",
+        "cStage IIC",
+        "cStage III",
+        "cStage IIIA",
+        "cStage IIIB",
+        "cStage IIIC",
+        "cStage IIIC1",
+        "cStage IIIC2",
+        "cStage IV",
+        "cStage IVA",
+        "cStage IVA1",
+        "cStage IVA2",
+        "cStage IVB",
+        "cStage IVC",
         "Occult",
         "Not applicable",
         "Unknown"
@@ -1248,6 +1249,33 @@ NCDBRecode <- function(df) {
     )
 
   var_label(df$TNM_CLIN_STAGE_GROUP) <- "AJCC Clinical Stage Group"
+
+  df$cSTAGE_RECODE <- NA
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("cStage 0","cStage 0A","cStage 0is")] <- 0
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("cStage I","cStage IA","cStage IA1","cStage IA2","cStage IB","cStage IB1","cStage IB2","cStage IC","cStage IS")] <- 1
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("cStage II","cStage IIA","cStage IIA1","cStage IIA2","cStage IIB","cStage IIC")] <- 2
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("cStage III","cStage IIIA","cStage IIIB","cStage IIIC","cStage IIIC1","cStage IIIC2")] <- 3
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("cStage IV", "cStage IVA","cStage IVA1","cStage IVA2","cStage IVB","cStage IVC")] <- 4
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("Occult")] <- 5
+  df$cSTAGE_RECODE[df$TNM_CLIN_STAGE_GROUP %in% c("Not applicable", "Unknown")] <- 6
+
+
+  df$cSTAGE_RECODE <-
+    factor(
+      df$cSTAGE_RECODE,
+      levels = c(0, 1, 2, 3, 4, 5, 6),
+      labels = c("cStage 0",
+                 "cStage I",
+                 "cStage II",
+                 "cStage III",
+                 "cStage IV",
+                 "Occult",
+                 "Not applicable/Unknown")
+    )
+
+  var_label(df$cSTAGE_RECODE) <- "AJCC Clincal Stage Group"
+
+
 
 
   #TNM_PATH_T - AJCC Pathologic T
@@ -3177,21 +3205,22 @@ NCDBRecode <- function(df) {
 
 }
 NCDBTableOne <- function(df){
-
+# If a vector of variables is not passed, use this as default
   tableOne <-
     CreateTableOne(
       vars = c(
         "AGE_GROUP",
         "SEX",
         "RACE",
-        "CDCC_SHORT",
+        "CDCC_TOTAL_BEST",
         "INSURANCE_STATUS",
         "MED_INC_QUAR_12",
         "NO_HSD_QUAR_12",
         "URBAN_RURAL",
         "FACILITY_TYPE_CD",
         "GRADE_RECODE",
-        "STAGE_RECODE",
+        "pSTAGE_RECODE",
+        "cSTAGE_RECODE",
         "PRIMARY_SITE",
         "SURGERY_MARGINS",
         "ANY_RADIATION",
@@ -3200,7 +3229,6 @@ NCDBTableOne <- function(df){
       ),
       data = df
     )
-
   tableOne
 
 }
@@ -3238,8 +3266,9 @@ NCDBGroupAge <- function(df){
   # break ages into bins
   #loop through rows and run the ageCalculation function
   # function to sort into age groups
+  df$AGE_GROUP <- NA
   df$AGE_GROUP<-cut(
-    df$AGE,
+    as.numeric(df$AGE),
     breaks = c(-1,50,60,70, Inf),
     labels = c(
       "<50 years",
@@ -3250,10 +3279,12 @@ NCDBGroupAge <- function(df){
 
   var_label(df$AGE_GROUP) <- "Age (grouped)"
 
-  df$AGE_GROUP
+  df
 
 }
 NCDB_NodeGrouping <- function(df){
+
+
 
 }
 NCDB_MissingData <- function(df){
